@@ -22,12 +22,33 @@ class TasksViewController: UIViewController {
 //MARK: - TasksViewControllerProtocol
 extension TasksViewController: TasksViewControllerProtocol {
 
+    func setTitle(_ text: String) {
+        mainView.setTitle(text)
+    }
+    
+    func setDate(_ text: String) {
+        mainView.setDate(text)
+    }
+    
+    func setAddNewTaskButton(_ text: String) {
+        mainView.setAddNewTaskButton(text)
+    }
+
     func setTasks(_ tasks: [TasksCollectionViewCellData]) {
         mainView.reloadTasks(tasks)
     }
 
-    func setData(_ data: TaskViewData,  _ doneButtonAction: @escaping ((Int) -> ())) {
-        mainView.setData(data, doneButtonAction)
+    func setButtonsData(allButtonData: FilterButtonData, openButtonData: FilterButtonData, closedButtonData: FilterButtonData) {
+        mainView.setButtonsData(allButtonData: allButtonData, openButtonData: openButtonData, closedButtonData: closedButtonData)
     }
+
+    func setDoneButtonAction(_ doneButtonAction: @escaping ((Int) -> ())) {
+        mainView.doneButtonAction = doneButtonAction
+    }
+
+    func setFilterAction(_ filterAction: @escaping ((TaskFilterType) -> ())) {
+        mainView.filterAction = filterAction
+    }
+
 
 }

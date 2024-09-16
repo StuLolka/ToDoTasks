@@ -3,16 +3,18 @@ import SnapKit
 
 class TasksView: UIView {
 
+    var doneButtonAction: ((Int) -> ())?
+    var filterAction: ((TaskFilterType) -> ())?
+
     private var tasks: [TasksCollectionViewCellData] = []
-    private var doneButtonAction: ((Int) -> ())?
 
     private let titleLabel = UILabel()
     private let dateLabel = UILabel()
     private let addNewTaskButton = UIButton()
-    private let allFilterButton = FilterButton()
+    private let allFilterButton = FilterButton(type: .all)
     private let separatedView = UIView()
-    private let openFilterButton = FilterButton()
-    private let closedFilterButton = FilterButton()
+    private let openFilterButton = FilterButton(type: .open)
+    private let closedFilterButton = FilterButton(type: .closed)
     private let stackView = UIStackView()
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -35,28 +37,34 @@ class TasksView: UIView {
 
 extension TasksView: TasksViewProtocol {
 
+    func setTitle(_ text: String) {
+        titleLabel.text = text
+    }
+
+    func setDate(_ text: String) {
+        dateLabel.text = text
+    }
+
+    func setAddNewTaskButton(_ text: String) {
+        addNewTaskButton.setTitle(text, for: .normal)
+    }
+
     func reloadTasks(_ tasks: [TasksCollectionViewCellData]) {
         self.tasks = tasks
         collectionView.reloadData()
     }
-    
-    func setData(_ data: TaskViewData, _ doneButtonAction: @escaping ((Int) -> ())) {
-        self.doneButtonAction = doneButtonAction
-        titleLabel.text = data.title
-        dateLabel.text = data.date
-        addNewTaskButton.setTitle(data.buttonTitle, for: .normal)
-        allFilterButton.actionDelegate = self
-        allFilterButton.setTitle(data.allButtonTitle.title)
-        allFilterButton.setNumber(data.allButtonTitle.number)
-        allFilterButton.isSelected = data.allButtonTitle.isSelected
-        openFilterButton.actionDelegate = self
-        openFilterButton.setTitle(data.openButtonTitle.title)
-        openFilterButton.setNumber(data.openButtonTitle.number)
-        openFilterButton.isSelected = data.openButtonTitle.isSelected
-        closedFilterButton.actionDelegate = self
-        closedFilterButton.setTitle(data.closedButtonTitle.title)
-        closedFilterButton.setNumber(data.closedButtonTitle.number)
-        closedFilterButton.isSelected = data.closedButtonTitle.isSelected
+
+
+    func setButtonsData(allButtonData: FilterButtonData, openButtonData: FilterButtonData, closedButtonData: FilterButtonData) {
+        allFilterButton.setTitle(allButtonData.title)
+        allFilterButton.setNumber(allButtonData.number)
+        allFilterButton.isSelected = allButtonData.isSelected
+        openFilterButton.setTitle(openButtonData.title)
+        openFilterButton.setNumber(openButtonData.number)
+        openFilterButton.isSelected = openButtonData.isSelected
+        closedFilterButton.setTitle(closedButtonData.title)
+        closedFilterButton.setNumber(closedButtonData.number)
+        closedFilterButton.isSelected = closedButtonData.isSelected
     }
     
 }
@@ -64,10 +72,8 @@ extension TasksView: TasksViewProtocol {
 //MARK: - FilterButtonDelegate
 extension TasksView: FilterButtonDelegate {
     
-    func buttonTapped(_ button: FilterButton) {
-        for i in [allFilterButton, openFilterButton, closedFilterButton] {
-            i.isSelected = i == button
-        }
+    func buttonTapped(_ type: TaskFilterType) {
+        filterAction?(type)
     }
     
 }
@@ -105,7 +111,9 @@ private extension TasksView {
         separatedView.backgroundColor = .separatedViewFilterButtonsBackground()
         separatedView.layer.cornerRadius = 5
         separatedView.clipsToBounds = true
-        
+        allFilterButton.actionDelegate = self
+        openFilterButton.actionDelegate = self
+        closedFilterButton.actionDelegate = self
     }
     
     func setupCollectionView() {

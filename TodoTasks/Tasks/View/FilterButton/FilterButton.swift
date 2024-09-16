@@ -11,10 +11,12 @@ class FilterButton: UIView {
         }
     }
 
+    private let type: TaskFilterType
     private let titleLabel = UILabel()
     private let numberLabel = UILabel()
 
-    init() {
+    init(type: TaskFilterType) {
+        self.type = type
         super.init(frame: .zero)
         setupViews()
     }
@@ -40,7 +42,7 @@ private extension FilterButton {
         addSubviews(titleLabel, numberLabel)
         setGestureRecognizer()
 
-        numberLabel.font = .systemFont(ofSize: 13)
+        numberLabel.font = .systemFont(ofSize: 15)
         numberLabel.layer.cornerRadius = 8
         numberLabel.clipsToBounds = true
         numberLabel.textAlignment = .center
@@ -53,7 +55,7 @@ private extension FilterButton {
             $0.centerY.equalTo(titleLabel)
             $0.trailing.equalToSuperview()
             $0.leading.equalTo(titleLabel.snp.trailing).offset(8)
-            $0.height.equalTo(16)
+            $0.height.equalTo(18)
             $0.width.equalTo(23)
         }
     }
@@ -78,7 +80,7 @@ private extension FilterButton {
     }
 
     @objc func buttonTapped() {
-        actionDelegate?.buttonTapped(self)
+        actionDelegate?.buttonTapped(type)
     }
 
 }
