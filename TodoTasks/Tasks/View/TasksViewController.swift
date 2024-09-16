@@ -1,6 +1,7 @@
 import UIKit
 
 class TasksViewController: UIViewController {
+
     var presenter: TasksPresenterProtocol?
 
     private let configurator: TasksConfiguratorProtocol = TasksConfigurator()
@@ -21,10 +22,12 @@ class TasksViewController: UIViewController {
 //MARK: - TasksViewControllerProtocol
 extension TasksViewController: TasksViewControllerProtocol {
 
-    func setTasks() {}
+    func setTasks(_ tasks: [TasksCollectionViewCellData]) {
+        mainView.reloadTasks(tasks)
+    }
 
-    func setData(_ data: TaskViewDataSource) {
-        mainView.setData(data)
+    func setData(_ data: TaskViewData,  _ doneButtonAction: @escaping ((Int) -> ())) {
+        mainView.setData(data, doneButtonAction)
     }
 
 }

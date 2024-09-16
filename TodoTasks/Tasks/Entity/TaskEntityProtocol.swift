@@ -1,5 +1,7 @@
 import Foundation
 
 protocol TaskEntityProtocol {
-    func getTaskViewDataSource() -> TaskViewDataSource
+    func getTaskViewData() -> TaskViewData
+    func getTasks() -> [TasksCollectionViewCellData]
+    func toggleIsDone(_ id: Int)
 }

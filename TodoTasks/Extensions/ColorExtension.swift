@@ -28,6 +28,10 @@ extension UIColor {
     }
 
     //MARK: - Main
+    static func mainViewBackground(alpha: CGFloat = 1) -> UIColor {
+        UIColor.create(hex: "#f8f8f8", alpha: 1)
+    }
+
     static func title(alpha: CGFloat = 1) -> UIColor {
         .black
     }
@@ -45,7 +49,7 @@ extension UIColor {
     }
 
     static func separatedViewBackground(alpha: CGFloat = 1) -> UIColor {
-        .lightGray
+        UIColor.create(hex: "#f7f7f7", alpha: 1)
     }
 
     //MARK: - Filter Buttons
@@ -72,4 +76,26 @@ extension UIColor {
     static func filterButtonSelectedNumber(alpha: CGFloat = 1) -> UIColor {
         .white
     }
+
+    static func separatedViewFilterButtonsBackground(alpha: CGFloat = 1) -> UIColor {
+        UIColor.create(hex: "#dadada", alpha: 1)
+    }
+
+    //MARK: - CellView
+    static func cellViewBackground(alpha: CGFloat = 1) -> UIColor {
+        .white
+    }
+
+    static func doneButtonBorder(alpha: CGFloat = 1) -> UIColor {
+        .lightGray
+    }
+
+    static func notDoneButtonTint(alpha: CGFloat = 1) -> UIColor {
+        UIColor.create(hex: "#f2f2fc", alpha: 1)
+    }
+
+    static func doneButtonTint(alpha: CGFloat = 1) -> UIColor {
+        UIColor.create(hex: "#0d55f2", alpha: 1)
+    }
+
 }

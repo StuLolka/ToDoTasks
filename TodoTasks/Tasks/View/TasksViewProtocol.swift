@@ -1,5 +1,6 @@
 import UIKit
 
 protocol TasksViewProtocol: UIView {
-    func setData(_ data: TaskViewDataSource)
+    func reloadTasks(_ tasks: [TasksCollectionViewCellData])
+    func setData(_ data: TaskViewData, _ doneButtonAction: @escaping ((Int) -> ()))
 }

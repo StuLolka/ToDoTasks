@@ -32,6 +32,10 @@
 		033514032C9602D70004D02A /* TasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033514022C9602D70004D02A /* TasksView.swift */; };
 		033514062C96083A0004D02A /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033514052C96083A0004D02A /* ViewExtension.swift */; };
 		033514082C9608A20004D02A /* TasksViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033514072C9608A20004D02A /* TasksViewProtocol.swift */; };
+		03D9F7F32C97B7F500A5F278 /* FilterButtonDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D9F7F22C97B7F500A5F278 /* FilterButtonDelegate.swift */; };
+		03D9F7F62C97BA4300A5F278 /* TasksCollectionViewCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D9F7F52C97BA4300A5F278 /* TasksCollectionViewCellView.swift */; };
+		03D9F7F82C97BA4E00A5F278 /* TasksCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D9F7F72C97BA4E00A5F278 /* TasksCollectionViewCell.swift */; };
+		03D9F7FB2C97C40C00A5F278 /* StackViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D9F7FA2C97C40C00A5F278 /* StackViewExtension.swift */; };
 		ACF32ECBD8ABC427667D954B /* Pods_TodoTasks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7946723EED16363EF380DF60 /* Pods_TodoTasks.framework */; };
 /* End PBXBuildFile section */
 
@@ -82,6 +86,10 @@
 		033514022C9602D70004D02A /* TasksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksView.swift; sourceTree = "<group>"; };
 		033514052C96083A0004D02A /* ViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtension.swift; sourceTree = "<group>"; };
 		033514072C9608A20004D02A /* TasksViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksViewProtocol.swift; sourceTree = "<group>"; };
+		03D9F7F22C97B7F500A5F278 /* FilterButtonDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterButtonDelegate.swift; sourceTree = "<group>"; };
+		03D9F7F52C97BA4300A5F278 /* TasksCollectionViewCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksCollectionViewCellView.swift; sourceTree = "<group>"; };
+		03D9F7F72C97BA4E00A5F278 /* TasksCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksCollectionViewCell.swift; sourceTree = "<group>"; };
+		03D9F7FA2C97C40C00A5F278 /* StackViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackViewExtension.swift; sourceTree = "<group>"; };
 		5B1B55A2D62C3059A56C2B38 /* Pods-TodoTasks.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoTasks.debug.xcconfig"; path = "Target Support Files/Pods-TodoTasks/Pods-TodoTasks.debug.xcconfig"; sourceTree = "<group>"; };
 		7946723EED16363EF380DF60 /* Pods_TodoTasks.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TodoTasks.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2B846041AD65D33ABA214D0 /* Pods-TodoTasks.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoTasks.release.xcconfig"; path = "Target Support Files/Pods-TodoTasks/Pods-TodoTasks.release.xcconfig"; sourceTree = "<group>"; };
@@ -147,9 +155,8 @@
 		033513B42C95EFF10004D02A /* TodoTasks */ = {
 			isa = PBXGroup;
 			children = (
+				03D9F7FC2C980CBC00A5F278 /* AppDelegates */,
 				033514042C96082C0004D02A /* Extensions */,
-				033513B52C95EFF10004D02A /* AppDelegate.swift */,
-				033513B72C95EFF10004D02A /* SceneDelegate.swift */,
 				033514012C95FE400004D02A /* Tasks */,
 				033513C12C95EFF20004D02A /* Assets.xcassets */,
 				033513C32C95EFF20004D02A /* LaunchScreen.storyboard */,
@@ -183,7 +190,8 @@
 				033513B92C95EFF10004D02A /* TasksViewController.swift */,
 				033513F82C95F9B00004D02A /* TasksViewControllerProtocol.swift */,
 				033514072C9608A20004D02A /* TasksViewProtocol.swift */,
-				031DCE242C96375200F46366 /* FilterButton.swift */,
+				03D9F7F42C97B83700A5F278 /* FilterButton */,
+				03D9F7F92C97BA5200A5F278 /* Cell */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -242,8 +250,36 @@
 			children = (
 				033514052C96083A0004D02A /* ViewExtension.swift */,
 				031DCE222C962FD600F46366 /* ColorExtension.swift */,
+				03D9F7FA2C97C40C00A5F278 /* StackViewExtension.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		03D9F7F42C97B83700A5F278 /* FilterButton */ = {
+			isa = PBXGroup;
+			children = (
+				031DCE242C96375200F46366 /* FilterButton.swift */,
+				03D9F7F22C97B7F500A5F278 /* FilterButtonDelegate.swift */,
+			);
+			path = FilterButton;
+			sourceTree = "<group>";
+		};
+		03D9F7F92C97BA5200A5F278 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				03D9F7F52C97BA4300A5F278 /* TasksCollectionViewCellView.swift */,
+				03D9F7F72C97BA4E00A5F278 /* TasksCollectionViewCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		03D9F7FC2C980CBC00A5F278 /* AppDelegates */ = {
+			isa = PBXGroup;
+			children = (
+				033513B52C95EFF10004D02A /* AppDelegate.swift */,
+				033513B72C95EFF10004D02A /* SceneDelegate.swift */,
+			);
+			path = AppDelegates;
 			sourceTree = "<group>";
 		};
 		0765272315D97FC0E58E6179 /* Pods */ = {
@@ -439,15 +475,19 @@
 			files = (
 				033513F02C95F6EC0004D02A /* TasksPresenter.swift in Sources */,
 				031DCE252C96375200F46366 /* FilterButton.swift in Sources */,
+				03D9F7F82C97BA4E00A5F278 /* TasksCollectionViewCell.swift in Sources */,
 				033514032C9602D70004D02A /* TasksView.swift in Sources */,
 				033513BA2C95EFF10004D02A /* TasksViewController.swift in Sources */,
 				033513ED2C95F6090004D02A /* TasksConfigurator.swift in Sources */,
 				033513FC2C95FB8F0004D02A /* TasksInteractorProtocol.swift in Sources */,
 				033514082C9608A20004D02A /* TasksViewProtocol.swift in Sources */,
 				031DCE232C962FD600F46366 /* ColorExtension.swift in Sources */,
+				03D9F7FB2C97C40C00A5F278 /* StackViewExtension.swift in Sources */,
+				03D9F7F32C97B7F500A5F278 /* FilterButtonDelegate.swift in Sources */,
 				033513B62C95EFF10004D02A /* AppDelegate.swift in Sources */,
 				031DCE282C9647F000F46366 /* TaskEntity.swift in Sources */,
 				033513F92C95F9B00004D02A /* TasksViewControllerProtocol.swift in Sources */,
+				03D9F7F62C97BA4300A5F278 /* TasksCollectionViewCellView.swift in Sources */,
 				033513C02C95EFF10004D02A /* TodoTasks.xcdatamodeld in Sources */,
 				031DCE2A2C96492000F46366 /* TaskEntityProtocol.swift in Sources */,
 				033513B82C95EFF10004D02A /* SceneDelegate.swift in Sources */,

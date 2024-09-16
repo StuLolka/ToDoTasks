@@ -1,6 +1,6 @@
 import Foundation
 
 protocol TasksViewControllerProtocol: AnyObject {
-    func setTasks()
-    func setData(_ data: TaskViewDataSource)
+    func setTasks(_ tasks: [TasksCollectionViewCellData])
+    func setData(_ data: TaskViewData, _ doneButtonAction: @escaping ((Int) -> ()))
 }

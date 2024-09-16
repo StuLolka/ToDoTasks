@@ -2,6 +2,9 @@ import UIKit
 import SnapKit
 
 class FilterButton: UIView {
+
+    weak var actionDelegate: FilterButtonDelegate?
+
     var isSelected: Bool = false {
         didSet {
             isSelected ? setToSelectedColor() : setUnselectedColor()
@@ -35,8 +38,9 @@ private extension FilterButton {
 
     func setupViews() {
         addSubviews(titleLabel, numberLabel)
+        setGestureRecognizer()
 
-        numberLabel.font = .systemFont(ofSize: 16)
+        numberLabel.font = .systemFont(ofSize: 13)
         numberLabel.layer.cornerRadius = 8
         numberLabel.clipsToBounds = true
         numberLabel.textAlignment = .center
@@ -46,11 +50,17 @@ private extension FilterButton {
         }
 
         numberLabel.snp.makeConstraints {
-            $0.top.bottom.trailing.equalToSuperview()
+            $0.centerY.equalTo(titleLabel)
+            $0.trailing.equalToSuperview()
             $0.leading.equalTo(titleLabel.snp.trailing).offset(8)
-            $0.height.equalTo(18)
-            $0.width.equalTo(25)
+            $0.height.equalTo(16)
+            $0.width.equalTo(23)
         }
+    }
+
+    func setGestureRecognizer() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(buttonTapped))
+        addGestureRecognizer(tap)
     }
 
     func setUnselectedColor() {
@@ -67,11 +77,8 @@ private extension FilterButton {
         numberLabel.backgroundColor = .filterButtonSelectedNumberBackground()
     }
 
-}
+    @objc func buttonTapped() {
+        actionDelegate?.buttonTapped(self)
+    }
 
-//MARK: - FilterButtonDataSource
-struct FilterButtonDataSource {
-    let title: String
-    let number: String
-    let isSelected: Bool
 }

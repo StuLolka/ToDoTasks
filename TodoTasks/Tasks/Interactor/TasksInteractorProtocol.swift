@@ -1,7 +1,8 @@
 import Foundation
 
 protocol TasksInteractorProtocol: AnyObject {
-    func downloadTasks()
+    func getTasks() -> [TasksCollectionViewCellData]
     func saveTasks()
-    func getTaskViewDataSource() -> TaskViewDataSource
+    func getTaskViewData() -> TaskViewData
+    func toggleIsDone(_ id: Int)
 }

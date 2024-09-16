@@ -5,13 +5,24 @@ class TasksInteractor {
     private let entity: TaskEntityProtocol = TaskEntity()
 }
 
+//MARK: - TasksInteractorProtocol
 extension TasksInteractor: TasksInteractorProtocol {
 
-    func getTaskViewDataSource() -> TaskViewDataSource {
-        entity.getTaskViewDataSource()
+    func getTasks() -> [TasksCollectionViewCellData] {
+        entity.getTasks()
     }
 
-    func downloadTasks() {}
+    func getTaskViewData() -> TaskViewData {
+        entity.getTaskViewData()
+    }
+
+    func toggleIsDone(_ id: Int) {
+        entity.toggleIsDone(id)
+        presenter?.reloadTasks()
+    }
+
+    func updateTask(_ id: Int) {}
 
     func saveTasks() {}
+
 }

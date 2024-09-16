@@ -6,34 +6,31 @@ class TasksPresenter {
     var interactor: TasksInteractorProtocol!
     weak var view: TasksViewControllerProtocol!
 
-    private var taskViewDataSource: TaskViewDataSource {
-        interactor.getTaskViewDataSource()
+    private var taskViewData: TaskViewData {
+        interactor.getTaskViewData()
     }
 
     init(view: TasksViewControllerProtocol) {
         self.view = view
     }
-
     
 }
 
 extension TasksPresenter: TasksPresenterProtocol {
 
+    func reloadTasks() {
+        view.setTasks(interactor.getTasks())
+    }
+
     func configureView() {
-        view.setTasks()
-        view.setData(taskViewDataSource)
+        view.setTasks(interactor.getTasks())
+        view.setData(taskViewData, interactor.toggleIsDone)
     }
     
-    func addNewTask() {
-        
-    }
+    func addNewTask() {}
     
-    func editTask() {
-        
-    }
+    func editTask() {}
     
-    func removeTask() {
-        
-    }
+    func removeTask() {}
 
 }
