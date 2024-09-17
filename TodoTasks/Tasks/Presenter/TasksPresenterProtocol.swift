@@ -1,5 +1,6 @@
 import Foundation
 
+//MARK: - TasksPresenterProtocol
 protocol TasksPresenterProtocol: AnyObject {
     var router: TasksRouterProtocol { set get }
 
@@ -9,4 +10,9 @@ protocol TasksPresenterProtocol: AnyObject {
     func addNewTask()
     func editTask()
     func removeTask()
+}
+
+//MARK: - TasksPresenterDelegateProtocol
+protocol TasksPresenterDelegateProtocol {
+    func sendEvent(_ event: TasksEvent)
 }

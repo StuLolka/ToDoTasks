@@ -3,10 +3,7 @@ import SnapKit
 
 class TasksView: UIView {
 
-    var doneButtonAction: ((Int) -> ())?
-    var filterAction: ((TaskFilterType) -> ())?
-    var removeTaskAction: ((Int) -> ())?
-
+    var delegate: TasksPresenterDelegateProtocol?
     private var tasks: [TasksCollectionViewCellData] = []
 
     private let titleLabel = UILabel()
@@ -72,7 +69,7 @@ extension TasksView: TasksViewProtocol {
 extension TasksView: FilterButtonDelegate {
     
     func buttonTapped(_ type: TaskFilterType) {
-        filterAction?(type)
+        delegate?.sendEvent(.filter(type))
     }
     
 }
@@ -126,7 +123,7 @@ private extension TasksView {
         var listConfig = UICollectionLayoutListConfiguration(appearance: .sidebarPlain)
         listConfig.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
           let actionHandler: UIContextualAction.Handler = { action, view, completion in
-              self.removeTaskAction!(indexPath.row)
+              self.delegate?.sendEvent(.remove(indexPath.row))
               completion(true)
           }
 
@@ -186,7 +183,7 @@ extension TasksView: UICollectionViewDataSource {
         let defaultCell = defaultCell(collectionView, indexPath)
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TasksCollectionViewCell.id, for: indexPath) as? TasksCollectionViewCell else { return defaultCell
         }
-        cell.setData(tasks[indexPath.row], doneButtonAction!)
+        cell.setData(tasks[indexPath.row], delegate)
         return cell
     }
     

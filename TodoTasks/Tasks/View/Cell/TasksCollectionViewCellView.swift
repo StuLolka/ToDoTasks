@@ -9,7 +9,7 @@ class TasksCollectionViewCellView: UIView {
     private var dateLabel = UILabel()
     private var doneButton = UIButton()
 
-    private var action: ((Int) -> ())?
+    private var delegate: TasksPresenterDelegateProtocol?
     private var id = 0
     private var isDone = false
     private var titleText = ""
@@ -23,8 +23,8 @@ class TasksCollectionViewCellView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setData(_ data: TasksCollectionViewCellData, _ action: @escaping ((Int) -> ())) {
-        self.action = action
+    func setData(_ data: TasksCollectionViewCellData, _ delegate: TasksPresenterDelegateProtocol?) {
+        self.delegate = delegate
         id = data.id
         titleText = data.title
         subtitleLabel.text = data.subtitle
@@ -117,7 +117,7 @@ private extension TasksCollectionViewCellView {
     }
 
     @objc func buttonTapped() {
-        action?(id)
+        delegate?.sendEvent(.done(id))
     }
 
 }

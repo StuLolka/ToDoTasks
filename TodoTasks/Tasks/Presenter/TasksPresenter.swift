@@ -45,9 +45,11 @@ extension TasksPresenter: TasksPresenterProtocol {
         view.setTitle(title)
         view.setDate(currentDate)
         view.setAddNewTaskButton(interactor.getButtonTitle())
-        view.setDoneButtonAction(interactor.toggleIsDone(_:))
-        view.setFilterAction(interactor.filterTask(type:))
-        view.setRemoveTaskAction(interactor.removeTask(with:))
+        view.setDelegate(self)
+    }
+
+    func eventHandler() {
+        
     }
     
     func addNewTask() {}
@@ -55,5 +57,14 @@ extension TasksPresenter: TasksPresenterProtocol {
     func editTask() {}
     
     func removeTask() {}
+
+}
+
+//MARK: - TasksPresenterDelegateProtocol
+extension TasksPresenter: TasksPresenterDelegateProtocol {
+    
+    func sendEvent(_ event: TasksEvent) {
+        interactor.handleEvent(event)
+    }
 
 }

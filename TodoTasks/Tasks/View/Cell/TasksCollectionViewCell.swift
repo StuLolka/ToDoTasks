@@ -16,8 +16,8 @@ class TasksCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func setData(_ data: TasksCollectionViewCellData, _ action: @escaping ((Int) -> ())) {
-        view.setData(data, action)
+    func setData(_ data: TasksCollectionViewCellData, _ delegate: TasksPresenterDelegateProtocol?) {
+        view.setData(data, delegate)
     }
 
 }

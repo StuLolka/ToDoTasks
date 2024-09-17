@@ -42,7 +42,18 @@ extension TasksInteractor: TasksInteractorProtocol {
         entity.getTaskViewData()
     }
 
-    func filterTask(type: TaskFilterType) {
+    func handleEvent(_ event: TasksEvent) {
+        switch event {
+        case .done(let id):
+            toggleIsDone(id)
+        case .filter(let type):
+            filterTask(type)
+        case .remove(let id):
+            removeTask(id)
+        }
+    }
+
+    func filterTask(_ type: TaskFilterType) {
         entity.changeSelectedFilter(to: type)
         presenter?.setTasks(entity.getTasks())
     }
@@ -53,7 +64,7 @@ extension TasksInteractor: TasksInteractorProtocol {
         presenter?.setFilterButtons(entity.getButtonsData().0, entity.getButtonsData().1, entity.getButtonsData().2)
     }
 
-    func removeTask(with id: Int) {
+    func removeTask(_ id: Int) {
         entity.removeTask(id)
         presenter?.setTasks(entity.getTasks())
         presenter?.setFilterButtons(entity.getButtonsData().0, entity.getButtonsData().1, entity.getButtonsData().2)
@@ -81,4 +92,11 @@ private extension TasksInteractor {
         case launchedBefore
     }
 
+}
+
+//MARK: - TasksEvent
+enum TasksEvent {
+    case done(Int)
+    case filter(TaskFilterType)
+    case remove(Int)
 }

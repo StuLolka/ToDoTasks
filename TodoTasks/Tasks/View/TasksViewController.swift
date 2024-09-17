@@ -42,17 +42,8 @@ extension TasksViewController: TasksViewControllerProtocol {
         mainView.setButtonsData(allButtonData: allButtonData, openButtonData: openButtonData, closedButtonData: closedButtonData)
     }
 
-    func setDoneButtonAction(_ doneButtonAction: @escaping ((Int) -> ())) {
-        mainView.doneButtonAction = doneButtonAction
+    func setDelegate(_ delegate: TasksPresenterDelegateProtocol) {
+        mainView.delegate = delegate
     }
-
-    func setFilterAction(_ filterAction: @escaping ((TaskFilterType) -> ())) {
-        mainView.filterAction = filterAction
-    }
-
-    func setRemoveTaskAction(_ removeTaskAction: @escaping ((Int) -> ())) {
-        mainView.removeTaskAction = removeTaskAction
-    }
-
 
 }

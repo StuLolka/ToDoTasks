@@ -7,7 +7,5 @@ protocol TasksInteractorProtocol: AnyObject {
     func getTasks()
     func saveTasks()
     func getTaskViewData() -> TaskViewData
-    func toggleIsDone(_ id: Int)
-    func filterTask(type: TaskFilterType)
-    func removeTask(with id: Int)
+    func handleEvent(_ event: TasksEvent)
 }
