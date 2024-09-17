@@ -33,7 +33,8 @@ private extension TasksCollectionViewCell {
         layer.shadowRadius = 3
 
         view.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.bottom.equalToSuperview().inset(6)
+            $0.leading.trailing.equalToSuperview()
         }
     }
 

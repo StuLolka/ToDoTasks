@@ -9,5 +9,5 @@ protocol TasksInteractorProtocol: AnyObject {
     func getTaskViewData() -> TaskViewData
     func toggleIsDone(_ id: Int)
     func filterTask(type: TaskFilterType)
-    func getFilterButtonsData() -> (FilterButtonData, FilterButtonData, FilterButtonData)
+    func removeTask(with id: Int)
 }

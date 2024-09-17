@@ -4,6 +4,14 @@ class TasksInteractor {
     weak var presenter: TasksPresenterProtocol?
     private let entity: TaskEntityProtocol = TaskEntity()
     private let service: ServiceProtocol = Service()
+
+    private var isLaunchedBefore: Bool {
+        let launchedBefore = UserDefaults.standard.bool(forKey: UserDefaultsKey.launchedBefore.rawValue)
+        if !launchedBefore  {
+            UserDefaults.standard.set(true, forKey: UserDefaultsKey.launchedBefore.rawValue)
+        }
+        return launchedBefore
+    }
 }
 
 //MARK: - TasksInteractorProtocol
@@ -22,7 +30,12 @@ extension TasksInteractor: TasksInteractorProtocol {
     }
 
     func getTasks() {
-        isLaunchedBefore() ? presenter?.reloadTasks(entity.getTasks()) : getTasksFromService()
+        if !isLaunchedBefore {
+            getTasksFromService()
+        } else {
+            presenter?.setTasks(entity.getTasks())
+            presenter?.setFilterButtons(entity.getButtonsData().0, entity.getButtonsData().1, entity.getButtonsData().2)
+        }
     }
 
     func getTaskViewData() -> TaskViewData {
@@ -31,16 +44,19 @@ extension TasksInteractor: TasksInteractorProtocol {
 
     func filterTask(type: TaskFilterType) {
         entity.changeSelectedFilter(to: type)
-        presenter?.reloadTasks(entity.getTasks())
+        presenter?.setTasks(entity.getTasks())
     }
 
     func toggleIsDone(_ id: Int) {
         entity.toggleIsDone(id)
-        presenter?.reloadTasks(entity.getTasks())
+        presenter?.setTasks(entity.getTasks())
+        presenter?.setFilterButtons(entity.getButtonsData().0, entity.getButtonsData().1, entity.getButtonsData().2)
     }
 
-    func getFilterButtonsData() -> (FilterButtonData, FilterButtonData, FilterButtonData) {
-        entity.getButtonsData()
+    func removeTask(with id: Int) {
+        entity.removeTask(id)
+        presenter?.setTasks(entity.getTasks())
+        presenter?.setFilterButtons(entity.getButtonsData().0, entity.getButtonsData().1, entity.getButtonsData().2)
     }
 
     func updateTask(_ id: Int) {}
@@ -52,23 +68,17 @@ extension TasksInteractor: TasksInteractorProtocol {
 //MARK: - private
 private extension TasksInteractor {
 
-    func isLaunchedBefore() -> Bool {
-        let launchedBefore = UserDefaults.standard.bool(forKey: UserDefaultsKey.launchedBefore.rawValue)
-        if !launchedBefore  {
-            UserDefaults.standard.set(true, forKey: UserDefaultsKey.launchedBefore.rawValue)
-        }
-        return launchedBefore
-    }
-
     func getTasksFromService() {
         service.fetchTasks { model in
             let tasks = model.todos.map { TasksCollectionViewCellData(id: $0.id, title: $0.todo, subtitle: $0.todo, date: self.getCurrentDate(), isDone: $0.completed) }
             self.entity.setTasksFromService(tasks)
-            self.presenter?.reloadTasks(self.entity.getTasks())
+            self.presenter?.setTasks(self.entity.getTasks())
+            self.presenter?.setFilterButtons(self.entity.getButtonsData().0, self.entity.getButtonsData().1, self.entity.getButtonsData().2)
         }
     }
 
     enum UserDefaultsKey: String {
         case launchedBefore
     }
+
 }

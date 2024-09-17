@@ -50,5 +50,9 @@ extension TasksViewController: TasksViewControllerProtocol {
         mainView.filterAction = filterAction
     }
 
+    func setRemoveTaskAction(_ removeTaskAction: @escaping ((Int) -> ())) {
+        mainView.removeTaskAction = removeTaskAction
+    }
+
 
 }

@@ -5,6 +5,7 @@ class TasksView: UIView {
 
     var doneButtonAction: ((Int) -> ())?
     var filterAction: ((TaskFilterType) -> ())?
+    var removeTaskAction: ((Int) -> ())?
 
     private var tasks: [TasksCollectionViewCellData] = []
 
@@ -18,8 +19,6 @@ class TasksView: UIView {
     private let stackView = UIStackView()
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         return UICollectionView(frame: .zero, collectionViewLayout: layout)
     }()
 
@@ -123,6 +122,23 @@ private extension TasksView {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(TasksCollectionViewCell.self, forCellWithReuseIdentifier: TasksCollectionViewCell.id)
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "UICollectionViewCell.self")
+
+        var listConfig = UICollectionLayoutListConfiguration(appearance: .sidebarPlain)
+        listConfig.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
+          let actionHandler: UIContextualAction.Handler = { action, view, completion in
+              self.removeTaskAction!(indexPath.row)
+              completion(true)
+          }
+
+          let action = UIContextualAction(style: .normal, title: "Delete", handler: actionHandler)
+          action.backgroundColor = .red
+
+          return UISwipeActionsConfiguration(actions: [action])
+        }
+
+        listConfig.showsSeparators = false
+        let listLayout = UICollectionViewCompositionalLayout.list(using: listConfig)
+        collectionView.setCollectionViewLayout(listLayout, animated: false)
     }
     
     func setupConstraints() {
@@ -177,4 +193,5 @@ extension TasksView: UICollectionViewDataSource {
     func defaultCell(_ collectionView: UICollectionView, _ indexPath: IndexPath) -> UICollectionViewCell {
         collectionView.dequeueReusableCell(withReuseIdentifier: "UICollectionViewCell.self", for: indexPath)
     }
+
 }

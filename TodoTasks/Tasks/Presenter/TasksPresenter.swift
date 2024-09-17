@@ -22,10 +22,6 @@ class TasksPresenter {
         interactor.getTaskViewData()
     }
 
-    private var buttonsData: (FilterButtonData, FilterButtonData, FilterButtonData) {
-        interactor.getFilterButtonsData()
-    }
-
     init(view: TasksViewControllerProtocol) {
         self.view = view
     }
@@ -35,9 +31,12 @@ class TasksPresenter {
 //MARK: - TasksPresenterProtocol
 extension TasksPresenter: TasksPresenterProtocol {
 
-    func reloadTasks(_ tasks: [TasksCollectionViewCellData]) {
+    func setTasks(_ tasks: [TasksCollectionViewCellData]) {
         view.setTasks(tasks)
-        view.setButtonsData(allButtonData: buttonsData.0, openButtonData: buttonsData.1, closedButtonData: buttonsData.2)
+    }
+
+    func setFilterButtons(_ all: FilterButtonData, _ open: FilterButtonData, _ closed: FilterButtonData) {
+        view.setButtonsData(allButtonData: all, openButtonData: open, closedButtonData: closed)
     }
 
     func configureView() {
@@ -46,9 +45,9 @@ extension TasksPresenter: TasksPresenterProtocol {
         view.setTitle(title)
         view.setDate(currentDate)
         view.setAddNewTaskButton(interactor.getButtonTitle())
-        view.setButtonsData(allButtonData: buttonsData.0, openButtonData: buttonsData.1, closedButtonData: buttonsData.2)
         view.setDoneButtonAction(interactor.toggleIsDone(_:))
         view.setFilterAction(interactor.filterTask(type:))
+        view.setRemoveTaskAction(interactor.removeTask(with:))
     }
     
     func addNewTask() {}

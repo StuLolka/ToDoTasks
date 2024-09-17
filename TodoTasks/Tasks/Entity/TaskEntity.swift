@@ -43,10 +43,7 @@ extension TaskEntity: TaskEntityProtocol {
     }
 
     func getTaskViewData() -> TaskViewData {
-        let allButton = FilterButtonData(title: "All", number: String(testTasks.count), isSelected: true)
-        let openButton = FilterButtonData(title: "Open", number: String(openTasks.count), isSelected: false)
-        let closedButton = FilterButtonData(title: "Closed", number: String(closedTasks.count), isSelected: false)
-        return TaskViewData(title: title, date: currentDate, buttonTitle: buttonTitle, allButtonData: allButton, openButtonData: openButton, closedButtonData: closedButton)
+        return TaskViewData(title: title, date: currentDate, buttonTitle: buttonTitle)
     }
 
     func getTasks() -> [TasksCollectionViewCellData] {
@@ -70,6 +67,10 @@ extension TaskEntity: TaskEntityProtocol {
         self.testTasks = tasks
     }
 
+    func removeTask(_ id: Int) {
+        testTasks.remove(at: id)
+    }
+
 }
 
 //MARK: - TaskViewData
@@ -77,9 +78,6 @@ struct TaskViewData {
     let title: String
     let date: String
     let buttonTitle: String
-    let allButtonData: FilterButtonData
-    let openButtonData: FilterButtonData
-    let closedButtonData: FilterButtonData
 }
 
 //MARK: - TasksCollectionViewCellData

@@ -8,4 +8,5 @@ protocol TasksViewControllerProtocol: AnyObject {
     func setButtonsData(allButtonData: FilterButtonData, openButtonData: FilterButtonData, closedButtonData: FilterButtonData)
     func setDoneButtonAction(_ doneButtonAction: @escaping ((Int) -> ()))
     func setFilterAction(_ filterAction: @escaping ((TaskFilterType) -> ()))
+    func setRemoveTaskAction(_ removeTaskAction: @escaping ((Int) -> ()))
 }

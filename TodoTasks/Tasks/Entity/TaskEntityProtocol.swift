@@ -11,4 +11,5 @@ protocol TaskEntityProtocol {
     func changeSelectedFilter(to filter: TaskFilterType)
     func getButtonsData() -> (FilterButtonData, FilterButtonData, FilterButtonData)
     func setTasksFromService(_ tasks: [TasksCollectionViewCellData])
+    func removeTask(_ id: Int)
 }
