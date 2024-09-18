@@ -14,12 +14,12 @@ class Service {
 //MARK: - ServiceProtocol
 extension Service: ServiceProtocol {
 
-    func fetchTasks(completion: @escaping (TodoModel) -> ()) {
+    func fetchTasks(completion: @escaping (TaskServerModel) -> ()) {
         guard let url else { return }
 
         AF.request(url)
             .validate()
-            .responseDecodable(of: TodoModel.self) { response in
+            .responseDecodable(of: TaskServerModel.self) { response in
                 guard let model = response.value else { return }
                 completion(model)
             }.resume()

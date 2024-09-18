@@ -2,7 +2,7 @@ import UIKit
 
 class TasksViewController: UIViewController {
 
-    var presenter: TasksPresenterProtocol?
+    var presenter: TasksPresenterViewProtocol?
 
     private let configurator: TasksConfiguratorProtocol = TasksConfigurator()
     private let mainView: TasksViewProtocol = TasksView()
@@ -22,6 +22,11 @@ class TasksViewController: UIViewController {
 //MARK: - TasksViewControllerProtocol
 extension TasksViewController: TasksViewControllerProtocol {
 
+    func updateTasks() {
+        presenter?.updateTasks()
+    }
+    
+
     func setTitle(_ text: String) {
         mainView.setTitle(text)
     }
@@ -34,7 +39,7 @@ extension TasksViewController: TasksViewControllerProtocol {
         mainView.setAddNewTaskButton(text)
     }
 
-    func setTasks(_ tasks: [TasksCollectionViewCellData]) {
+    func setTasks(_ tasks: [TaskModel]) {
         mainView.reloadTasks(tasks)
     }
 

@@ -3,8 +3,6 @@ import SnapKit
 
 class TasksCollectionViewCell: UICollectionViewCell {
 
-    static var id = description()
-
     private let view = TasksCollectionViewCellView()
 
     override init(frame: CGRect) {
@@ -16,7 +14,7 @@ class TasksCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func setData(_ data: TasksCollectionViewCellData, _ delegate: TasksPresenterDelegateProtocol?) {
+    func setData(_ data: TaskModel, _ delegate: TasksPresenterDelegateProtocol?) {
         view.setData(data, delegate)
     }
 

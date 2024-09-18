@@ -1,15 +1,19 @@
 import Foundation
 
 //MARK: - TasksPresenterProtocol
-protocol TasksPresenterProtocol: AnyObject {
-    var router: TasksRouterProtocol { set get }
-
-    func setTasks(_ tasks: [TasksCollectionViewCellData])
-    func setFilterButtons(_ all: FilterButtonData, _ open: FilterButtonData, _ closed: FilterButtonData)
+protocol TasksPresenterViewProtocol: AnyObject {
     func configureView()
+    func updateTasks()
+}
+
+//MARK: - TasksPresenterProtocol
+protocol TasksPresenterProtocol: AnyObject {
+    func setTasks(_ tasks: [TaskModel])
+    func setFilterButtons(_ all: FilterButtonData, _ open: FilterButtonData, _ closed: FilterButtonData)
     func addNewTask()
     func editTask()
     func removeTask()
+    func presentCreateTaskView()
 }
 
 //MARK: - TasksPresenterDelegateProtocol

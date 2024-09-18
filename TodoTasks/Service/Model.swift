@@ -1,6 +1,6 @@
 import Foundation
 
-struct TodoModel: Decodable {
+struct TaskServerModel: Decodable {
     let todos: [Todos]
     let total: Int
     let skip: Int

@@ -1,3 +1,9 @@
 import Foundation
 
-protocol TasksRouterProtocol {}
+protocol TasksRouterProtocol: AnyObject {
+    func presentAddNewTaskViewController()
+}
+
+protocol TasksRouterDelegateProtocol {
+    func viewWillDisappear()
+}

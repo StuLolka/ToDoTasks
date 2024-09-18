@@ -2,54 +2,57 @@ import Foundation
 
 class TasksPresenter {
 
-    var router: TasksRouterProtocol = TasksRouter()
     var interactor: TasksInteractorProtocol!
-    weak var view: TasksViewControllerProtocol!
+    weak var viewController: TasksViewControllerProtocol!
 
-    private var currentDate: String {
-        interactor.getCurrentDate()
-    }
-
-    private var title: String {
-        interactor.getTitle()
-    }
-
-    private var buttonTitle: String {
-        interactor.getButtonTitle()
-    }
+    private let router: TasksRouterProtocol
 
     private var taskViewData: TaskViewData {
         interactor.getTaskViewData()
     }
 
-    init(view: TasksViewControllerProtocol) {
-        self.view = view
+    init(viewController: TasksViewControllerProtocol, router: TasksRouterProtocol) {
+        self.viewController = viewController
+        self.router = router
     }
     
+}
+
+//MARK: - TasksPresenterViewProtocol
+extension TasksPresenter: TasksPresenterViewProtocol {
+
+    func configureView() {
+        interactor.getTasks()
+
+        viewController.setTitle(taskViewData.title)
+        viewController.setDate(taskViewData.date)
+        viewController.setAddNewTaskButton(taskViewData.buttonTitle)
+        viewController.setDelegate(self)
+    }
+
+    func updateTasks() {
+        interactor.getTasks()
+    }
+
 }
 
 //MARK: - TasksPresenterProtocol
 extension TasksPresenter: TasksPresenterProtocol {
 
-    func setTasks(_ tasks: [TasksCollectionViewCellData]) {
-        view.setTasks(tasks)
+    func setTasks(_ tasks: [TaskModel]) {
+        viewController.setTasks(tasks)
     }
 
     func setFilterButtons(_ all: FilterButtonData, _ open: FilterButtonData, _ closed: FilterButtonData) {
-        view.setButtonsData(allButtonData: all, openButtonData: open, closedButtonData: closed)
-    }
-
-    func configureView() {
-        interactor.getTasks()
-
-        view.setTitle(title)
-        view.setDate(currentDate)
-        view.setAddNewTaskButton(interactor.getButtonTitle())
-        view.setDelegate(self)
+        viewController.setButtonsData(allButtonData: all, openButtonData: open, closedButtonData: closed)
     }
 
     func eventHandler() {
         
+    }
+
+    func presentCreateTaskView() {
+        router.presentAddNewTaskViewController()
     }
     
     func addNewTask() {}

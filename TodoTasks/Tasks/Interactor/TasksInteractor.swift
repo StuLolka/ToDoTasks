@@ -1,6 +1,7 @@
 import Foundation
 
 class TasksInteractor {
+
     weak var presenter: TasksPresenterProtocol?
     private let entity: TaskEntityProtocol = TaskEntity()
     private let service: ServiceProtocol = Service()
@@ -16,26 +17,14 @@ class TasksInteractor {
 
 //MARK: - TasksInteractorProtocol
 extension TasksInteractor: TasksInteractorProtocol {
-
-    func getCurrentDate() -> String {
-        entity.currentDate
-    }
-
-    func getTitle() -> String {
-        entity.title
-    }
-
-    func getButtonTitle() -> String {
-        entity.buttonTitle
-    }
-
+    
     func getTasks() {
-        if !isLaunchedBefore {
-            getTasksFromService()
-        } else {
-            presenter?.setTasks(entity.getTasks())
-            presenter?.setFilterButtons(entity.getButtonsData().0, entity.getButtonsData().1, entity.getButtonsData().2)
-        }
+        isLaunchedBefore ? setTasks() : getTasksFromService()
+    }
+    
+    func setTasks() {
+        presenter?.setTasks(entity.getTasks())
+        presenter?.setFilterButtons(entity.getButtonsData().0, entity.getButtonsData().1, entity.getButtonsData().2)
     }
 
     func getTaskViewData() -> TaskViewData {
@@ -50,21 +39,24 @@ extension TasksInteractor: TasksInteractorProtocol {
             filterTask(type)
         case .remove(let id):
             removeTask(id)
+        case .newTask:
+            presenter?.presentCreateTaskView()
         }
     }
 
     func filterTask(_ type: TaskFilterType) {
         entity.changeSelectedFilter(to: type)
         presenter?.setTasks(entity.getTasks())
+        presenter?.setFilterButtons(entity.getButtonsData().0, entity.getButtonsData().1, entity.getButtonsData().2)
     }
 
-    func toggleIsDone(_ id: Int) {
+    func toggleIsDone(_ id: UUID) {
         entity.toggleIsDone(id)
         presenter?.setTasks(entity.getTasks())
         presenter?.setFilterButtons(entity.getButtonsData().0, entity.getButtonsData().1, entity.getButtonsData().2)
     }
 
-    func removeTask(_ id: Int) {
+    func removeTask(_ id: UUID) {
         entity.removeTask(id)
         presenter?.setTasks(entity.getTasks())
         presenter?.setFilterButtons(entity.getButtonsData().0, entity.getButtonsData().1, entity.getButtonsData().2)
@@ -81,10 +73,10 @@ private extension TasksInteractor {
 
     func getTasksFromService() {
         service.fetchTasks { model in
-            let tasks = model.todos.map { TasksCollectionViewCellData(id: $0.id, title: $0.todo, subtitle: $0.todo, date: self.getCurrentDate(), isDone: $0.completed) }
-            self.entity.setTasksFromService(tasks)
-            self.presenter?.setTasks(self.entity.getTasks())
-            self.presenter?.setFilterButtons(self.entity.getButtonsData().0, self.entity.getButtonsData().1, self.entity.getButtonsData().2)
+            self.entity.setTasksFromService(model)
+            DispatchQueue.main.async {
+                self.setTasks()
+            }
         }
     }
 
@@ -96,7 +88,8 @@ private extension TasksInteractor {
 
 //MARK: - TasksEvent
 enum TasksEvent {
-    case done(Int)
+    case done(UUID)
     case filter(TaskFilterType)
-    case remove(Int)
+    case remove(UUID)
+    case newTask
 }

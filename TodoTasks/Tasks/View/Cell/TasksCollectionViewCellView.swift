@@ -10,7 +10,7 @@ class TasksCollectionViewCellView: UIView {
     private var doneButton = UIButton()
 
     private var delegate: TasksPresenterDelegateProtocol?
-    private var id = 0
+    private var id: UUID?
     private var isDone = false
     private var titleText = ""
     
@@ -23,13 +23,13 @@ class TasksCollectionViewCellView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setData(_ data: TasksCollectionViewCellData, _ delegate: TasksPresenterDelegateProtocol?) {
+    func setData(_ data: TaskModel, _ delegate: TasksPresenterDelegateProtocol?) {
         self.delegate = delegate
-        id = data.id
-        titleText = data.title
-        subtitleLabel.text = data.subtitle
-        dateLabel.text = data.date
-        isDone = data.isDone
+        self.id = data.id
+        titleText = data.title!
+        subtitleLabel.text = data.subtitle!
+        dateLabel.text = data.date!
+        isDone = data.isComplited
         setButtonImage()
         setLabelAttribute()
     }
@@ -117,7 +117,7 @@ private extension TasksCollectionViewCellView {
     }
 
     @objc func buttonTapped() {
-        delegate?.sendEvent(.done(id))
+        delegate?.sendEvent(.done(id!))
     }
 
 }

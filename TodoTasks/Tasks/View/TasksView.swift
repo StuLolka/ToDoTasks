@@ -4,8 +4,8 @@ import SnapKit
 class TasksView: UIView {
 
     var delegate: TasksPresenterDelegateProtocol?
-    private var tasks: [TasksCollectionViewCellData] = []
 
+    private var tasks: [TaskModel] = []
     private let titleLabel = UILabel()
     private let dateLabel = UILabel()
     private let addNewTaskButton = UIButton()
@@ -22,7 +22,7 @@ class TasksView: UIView {
     
     init() {
         super.init(frame: .zero)
-        setupViews()
+        setupView()
     }
     
     required init?(coder: NSCoder) {
@@ -45,7 +45,7 @@ extension TasksView: TasksViewProtocol {
         addNewTaskButton.setTitle(text, for: .normal)
     }
 
-    func reloadTasks(_ tasks: [TasksCollectionViewCellData]) {
+    func reloadTasks(_ tasks: [TaskModel]) {
         self.tasks = tasks
         collectionView.reloadData()
     }
@@ -77,7 +77,7 @@ extension TasksView: FilterButtonDelegate {
 //MARK: - private
 private extension TasksView {
     
-    func setupViews() {
+    func setupView() {
         backgroundColor = .mainViewBackground()
         stackView.addArrangedSubviews(allFilterButton, separatedView, openFilterButton, closedFilterButton)
         stackView.spacing = 16
@@ -104,6 +104,7 @@ private extension TasksView {
         addNewTaskButton.setTitleColor(.addNewTaskButtonTitle(), for: .normal)
         addNewTaskButton.setImage(.init(systemName: "plus"), for: .normal)
         addNewTaskButton.titleLabel!.font = UIFont.boldSystemFont(ofSize: 20)
+        addNewTaskButton.addTarget(self, action: #selector(addNewTaskButtonTapped), for: .touchUpInside)
         separatedView.backgroundColor = .separatedViewFilterButtonsBackground()
         separatedView.layer.cornerRadius = 5
         separatedView.clipsToBounds = true
@@ -118,12 +119,12 @@ private extension TasksView {
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(TasksCollectionViewCell.self, forCellWithReuseIdentifier: TasksCollectionViewCell.id)
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "UICollectionViewCell.self")
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: UICollectionViewCell.id)
 
         var listConfig = UICollectionLayoutListConfiguration(appearance: .sidebarPlain)
         listConfig.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
           let actionHandler: UIContextualAction.Handler = { action, view, completion in
-              self.delegate?.sendEvent(.remove(indexPath.row))
+              self.delegate?.sendEvent(.remove(self.tasks[indexPath.row].id))
               completion(true)
           }
 
@@ -169,6 +170,10 @@ private extension TasksView {
             $0.leading.trailing.bottom.equalTo(safeAreaLayoutGuide).inset(8)
         }
     }
+
+    @objc func addNewTaskButtonTapped() {
+        delegate?.sendEvent(.newTask)
+    }
     
 }
 
@@ -188,7 +193,7 @@ extension TasksView: UICollectionViewDataSource {
     }
     
     func defaultCell(_ collectionView: UICollectionView, _ indexPath: IndexPath) -> UICollectionViewCell {
-        collectionView.dequeueReusableCell(withReuseIdentifier: "UICollectionViewCell.self", for: indexPath)
+        collectionView.dequeueReusableCell(withReuseIdentifier: UICollectionViewCell.id, for: indexPath)
     }
 
 }

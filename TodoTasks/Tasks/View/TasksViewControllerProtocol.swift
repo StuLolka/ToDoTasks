@@ -1,7 +1,8 @@
-import Foundation
+import UIKit
 
-protocol TasksViewControllerProtocol: AnyObject {
-    func setTasks(_ tasks: [TasksCollectionViewCellData])
+protocol TasksViewControllerProtocol: UIViewController {
+    func updateTasks()
+    func setTasks(_ tasks: [TaskModel])
     func setTitle(_ text: String)
     func setDate(_ text: String)
     func setAddNewTaskButton(_ text: String)
