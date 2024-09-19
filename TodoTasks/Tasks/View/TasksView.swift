@@ -123,6 +123,7 @@ private extension TasksView {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(TasksCollectionViewCell.self, forCellWithReuseIdentifier: TasksCollectionViewCell.id)
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: UICollectionViewCell.id)
+        setCollectionViewLayout()
     }
 
     func setCollectionViewLayout() {
