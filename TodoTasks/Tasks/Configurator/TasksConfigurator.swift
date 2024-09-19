@@ -6,13 +6,12 @@ class TasksConfigurator {}
 extension TasksConfigurator: TasksConfiguratorProtocol {
 
     func configure(with viewController: TasksViewController) {
-        let presenter = TasksPresenter(view: viewController)
         let interactor = TasksInteractor()
-        let router = TasksRouter()
+        let router = TasksRouter(viewController: viewController)
+        let presenter = TasksPresenter(viewController: viewController, router: router)
 
         viewController.presenter = presenter
         presenter.interactor = interactor
-        presenter.router = router
         interactor.presenter = presenter
     }
 

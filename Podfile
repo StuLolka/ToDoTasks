@@ -4,4 +4,5 @@ use_frameworks!
 
 target 'TodoTasks' do
     pod 'SnapKit'
+    pod 'Alamofire'
 end

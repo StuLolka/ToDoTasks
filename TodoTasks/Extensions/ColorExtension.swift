@@ -98,4 +98,17 @@ extension UIColor {
         UIColor.create(hex: "#0d55f2", alpha: 1)
     }
 
+    //MARK: - EditViewController
+    static func textFieldViewBackground(alpha: CGFloat = 1) -> UIColor {
+        .white
+    }
+
+    static func inactiveButtonTitle(alpha: CGFloat = 1) -> UIColor {
+        .lightGray
+    }
+
+    static func activeButtonTitle(alpha: CGFloat = 1) -> UIColor {
+        .systemBlue
+    }
+
 }

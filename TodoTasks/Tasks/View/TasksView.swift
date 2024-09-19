@@ -3,28 +3,25 @@ import SnapKit
 
 class TasksView: UIView {
 
-    private var tasks: [TasksCollectionViewCellData] = []
-    private var doneButtonAction: ((Int) -> ())?
+    var delegate: TasksPresenterDelegateProtocol?
 
+    private var tasks: [TasksCollectionViewCellData] = []
     private let titleLabel = UILabel()
     private let dateLabel = UILabel()
     private let addNewTaskButton = UIButton()
-    private let allFilterButton = FilterButton()
+    private let allFilterButton = FilterButton(type: .all)
     private let separatedView = UIView()
-    private let openFilterButton = FilterButton()
-    private let closedFilterButton = FilterButton()
+    private let openFilterButton = FilterButton(type: .open)
+    private let closedFilterButton = FilterButton(type: .closed)
     private let stackView = UIStackView()
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         return UICollectionView(frame: .zero, collectionViewLayout: layout)
     }()
 
-    
     init() {
         super.init(frame: .zero)
-        setupViews()
+        setupView()
     }
     
     required init?(coder: NSCoder) {
@@ -33,49 +30,53 @@ class TasksView: UIView {
     
 }
 
+//MARK: - TasksViewProtocol
 extension TasksView: TasksViewProtocol {
+
+    func setTitle(_ text: String) {
+        titleLabel.text = text
+    }
+
+    func setDate(_ text: String) {
+        dateLabel.text = text
+    }
+
+    func setAddNewTaskButton(_ text: String) {
+        addNewTaskButton.setTitle(text, for: .normal)
+    }
 
     func reloadTasks(_ tasks: [TasksCollectionViewCellData]) {
         self.tasks = tasks
         collectionView.reloadData()
     }
-    
-    func setData(_ data: TaskViewData, _ doneButtonAction: @escaping ((Int) -> ())) {
-        self.doneButtonAction = doneButtonAction
-        titleLabel.text = data.title
-        dateLabel.text = data.date
-        addNewTaskButton.setTitle(data.buttonTitle, for: .normal)
-        allFilterButton.actionDelegate = self
-        allFilterButton.setTitle(data.allButtonTitle.title)
-        allFilterButton.setNumber(data.allButtonTitle.number)
-        allFilterButton.isSelected = data.allButtonTitle.isSelected
-        openFilterButton.actionDelegate = self
-        openFilterButton.setTitle(data.openButtonTitle.title)
-        openFilterButton.setNumber(data.openButtonTitle.number)
-        openFilterButton.isSelected = data.openButtonTitle.isSelected
-        closedFilterButton.actionDelegate = self
-        closedFilterButton.setTitle(data.closedButtonTitle.title)
-        closedFilterButton.setNumber(data.closedButtonTitle.number)
-        closedFilterButton.isSelected = data.closedButtonTitle.isSelected
+
+    func setButtonsData(allButtonData: FilterButtonData, openButtonData: FilterButtonData, closedButtonData: FilterButtonData) {
+        allFilterButton.setTitle(allButtonData.title)
+        allFilterButton.setNumber(allButtonData.number)
+        allFilterButton.isSelected = allButtonData.isSelected
+        openFilterButton.setTitle(openButtonData.title)
+        openFilterButton.setNumber(openButtonData.number)
+        openFilterButton.isSelected = openButtonData.isSelected
+        closedFilterButton.setTitle(closedButtonData.title)
+        closedFilterButton.setNumber(closedButtonData.number)
+        closedFilterButton.isSelected = closedButtonData.isSelected
     }
     
 }
 
 //MARK: - FilterButtonDelegate
 extension TasksView: FilterButtonDelegate {
-    
-    func buttonTapped(_ button: FilterButton) {
-        for i in [allFilterButton, openFilterButton, closedFilterButton] {
-            i.isSelected = i == button
-        }
+
+    func buttonTapped(_ type: TaskFilterType) {
+        delegate?.sendEvent(.filter(type))
     }
-    
+
 }
 
 //MARK: - private
 private extension TasksView {
     
-    func setupViews() {
+    func setupView() {
         backgroundColor = .mainViewBackground()
         stackView.addArrangedSubviews(allFilterButton, separatedView, openFilterButton, closedFilterButton)
         stackView.spacing = 16
@@ -83,11 +84,21 @@ private extension TasksView {
                     stackView, collectionView)
         setupConstraints()
         setupCollectionView()
+        setupButton()
         
         titleLabel.textColor = .title()
         titleLabel.font = .boldSystemFont(ofSize: 25)
         dateLabel.font = .systemFont(ofSize: 18)
         dateLabel.textColor = .date()
+        separatedView.backgroundColor = .separatedViewFilterButtonsBackground()
+        separatedView.layer.cornerRadius = 5
+        separatedView.clipsToBounds = true
+        allFilterButton.actionDelegate = self
+        openFilterButton.actionDelegate = self
+        closedFilterButton.actionDelegate = self
+    }
+
+    func setupButton() {
         var configuration = UIButton.Configuration.plain()
         configuration.imagePadding = 8
         configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
@@ -102,10 +113,7 @@ private extension TasksView {
         addNewTaskButton.setTitleColor(.addNewTaskButtonTitle(), for: .normal)
         addNewTaskButton.setImage(.init(systemName: "plus"), for: .normal)
         addNewTaskButton.titleLabel!.font = UIFont.boldSystemFont(ofSize: 20)
-        separatedView.backgroundColor = .separatedViewFilterButtonsBackground()
-        separatedView.layer.cornerRadius = 5
-        separatedView.clipsToBounds = true
-        
+        addNewTaskButton.addTarget(self, action: #selector(addNewTaskButtonTapped), for: .touchUpInside)
     }
     
     func setupCollectionView() {
@@ -114,7 +122,27 @@ private extension TasksView {
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(TasksCollectionViewCell.self, forCellWithReuseIdentifier: TasksCollectionViewCell.id)
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "UICollectionViewCell.self")
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: UICollectionViewCell.id)
+        setCollectionViewLayout()
+    }
+
+    func setCollectionViewLayout() {
+        var listConfiguration = UICollectionLayoutListConfiguration(appearance: .sidebarPlain)
+        listConfiguration.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
+          let actionHandler: UIContextualAction.Handler = { action, view, completion in
+              self.delegate?.sendEvent(.remove(self.tasks[indexPath.row].id))
+              completion(true)
+          }
+
+          let action = UIContextualAction(style: .normal, title: "Delete", handler: actionHandler)
+          action.backgroundColor = .red
+
+          return UISwipeActionsConfiguration(actions: [action])
+        }
+
+        listConfiguration.showsSeparators = false
+        let listLayout = UICollectionViewCompositionalLayout.list(using: listConfiguration)
+        collectionView.setCollectionViewLayout(listLayout, animated: false)
     }
     
     func setupConstraints() {
@@ -148,6 +176,10 @@ private extension TasksView {
             $0.leading.trailing.bottom.equalTo(safeAreaLayoutGuide).inset(8)
         }
     }
+
+    @objc func addNewTaskButtonTapped() {
+        delegate?.sendEvent(.newTask)
+    }
     
 }
 
@@ -159,14 +191,15 @@ extension TasksView: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let defaultCell = defaultCell(collectionView, indexPath)
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TasksCollectionViewCell.id, for: indexPath) as? TasksCollectionViewCell else { return defaultCell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TasksCollectionViewCell.id, for: indexPath) as? TasksCollectionViewCell else {
+            return defaultCell(collectionView, indexPath)
         }
-        cell.setData(tasks[indexPath.row], doneButtonAction!)
+        cell.setData(tasks[indexPath.row], delegate)
         return cell
     }
     
     func defaultCell(_ collectionView: UICollectionView, _ indexPath: IndexPath) -> UICollectionViewCell {
-        collectionView.dequeueReusableCell(withReuseIdentifier: "UICollectionViewCell.self", for: indexPath)
+        collectionView.dequeueReusableCell(withReuseIdentifier: UICollectionViewCell.id, for: indexPath)
     }
+
 }

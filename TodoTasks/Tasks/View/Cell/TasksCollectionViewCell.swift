@@ -3,8 +3,6 @@ import SnapKit
 
 class TasksCollectionViewCell: UICollectionViewCell {
 
-    static var id = description()
-
     private let view = TasksCollectionViewCellView()
 
     override init(frame: CGRect) {
@@ -16,8 +14,8 @@ class TasksCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func setData(_ data: TasksCollectionViewCellData, _ action: @escaping ((Int) -> ())) {
-        view.setData(data, action)
+    func setData(_ data: TasksCollectionViewCellData, _ delegate: TasksPresenterDelegateProtocol?) {
+        view.setData(data, delegate)
     }
 
 }
@@ -33,7 +31,8 @@ private extension TasksCollectionViewCell {
         layer.shadowRadius = 3
 
         view.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.bottom.equalToSuperview().inset(6)
+            $0.leading.trailing.equalToSuperview()
         }
     }
 

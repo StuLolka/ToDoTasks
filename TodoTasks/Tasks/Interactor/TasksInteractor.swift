@@ -1,28 +1,113 @@
-import Foundation
+import UIKit
 
 class TasksInteractor {
+
     weak var presenter: TasksPresenterProtocol?
     private let entity: TaskEntityProtocol = TaskEntity()
+    private let service: ServiceProtocol = Service()
+
+    private var isLaunchedBefore: Bool {
+        let launchedBefore = UserDefaults.standard.bool(forKey: UserDefaultsKey.launchedBefore.rawValue)
+        if !launchedBefore  {
+            UserDefaults.standard.set(true, forKey: UserDefaultsKey.launchedBefore.rawValue)
+        }
+        return launchedBefore
+    }
 }
 
 //MARK: - TasksInteractorProtocol
 extension TasksInteractor: TasksInteractorProtocol {
 
-    func getTasks() -> [TasksCollectionViewCellData] {
-        entity.getTasks()
+    func getTask(id: UUID) -> TaskModel? {
+        entity.getTask(id: id)
+    }
+    
+    func getTasks() {
+        isLaunchedBefore ? setTasks() : getTasksFromService()
+    }
+    
+    func setTasks() {
+        presenter?.setTasks(entity.getTasks())
+        presenter?.setFilterButtons(entity.getButtonsData().0, entity.getButtonsData().1, entity.getButtonsData().2)
     }
 
     func getTaskViewData() -> TaskViewData {
         entity.getTaskViewData()
     }
 
-    func toggleIsDone(_ id: Int) {
+    func handleEvent(_ event: TasksEvent) {
+        switch event {
+        case .done(let id):
+            toggleIsDone(id)
+        case .filter(let type):
+            filterTask(type)
+        case .remove(let id):
+            removeTask(id)
+        case .newTask:
+            presenter?.presentCreateTaskView()
+        case .taskSelected(let id):
+            presenter?.presentEditTaskView(id: id)
+        }
+    }
+
+    func filterTask(_ type: TaskFilterType) {
+        entity.changeSelectedFilter(to: type)
+        presenter?.setTasks(entity.getTasks())
+        presenter?.setFilterButtons(entity.getButtonsData().0, entity.getButtonsData().1, entity.getButtonsData().2)
+    }
+
+    func toggleIsDone(_ id: UUID) {
         entity.toggleIsDone(id)
-        presenter?.reloadTasks()
+        presenter?.setTasks(entity.getTasks())
+        presenter?.setFilterButtons(entity.getButtonsData().0, entity.getButtonsData().1, entity.getButtonsData().2)
+    }
+
+    func removeTask(_ id: UUID) {
+        entity.removeTask(id)
+        presenter?.setTasks(entity.getTasks())
+        presenter?.setFilterButtons(entity.getButtonsData().0, entity.getButtonsData().1, entity.getButtonsData().2)
     }
 
     func updateTask(_ id: Int) {}
 
     func saveTasks() {}
 
+}
+
+//MARK: - private
+private extension TasksInteractor {
+
+    func getTasksFromService() {
+        service.fetchTasks { model in
+            self.entity.setTasksFromService(model)
+            DispatchQueue.main.async {
+                self.setTasks()
+            }
+        }
+    }
+
+    enum UserDefaultsKey: String {
+        case launchedBefore
+    }
+
+}
+
+//MARK: - TasksEvent
+enum TasksEvent {
+    case done(UUID)
+    case filter(TaskFilterType)
+    case remove(UUID)
+    case newTask
+    case taskSelected(UUID)
+}
+
+//MARK: - TasksCollectionViewCellData
+struct TasksCollectionViewCellData {
+    let id: UUID
+    let title: String
+    let attributeString: NSAttributedString
+    let subtitle: String
+    let date: String
+    let doneButtonImage: UIImage
+    let tintColorButton: UIColor
 }
