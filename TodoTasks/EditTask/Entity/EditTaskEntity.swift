@@ -2,11 +2,16 @@ import Foundation
 
 class EditTaskEntity {
 
+    private let data: EditTaskData?
     private let cancelButtonTitle = "Cancel"
     private let doneButtonTitle = "Done"
     private let titlePlaceholder = "Title"
     private let subtitlePlaceholder = "Notes"
-    
+
+    init(data: EditTaskData? = nil) {
+        self.data = data
+    }
+
 }
 
 //MARK: - EditTaskEntityProtocol

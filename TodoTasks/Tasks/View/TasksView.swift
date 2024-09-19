@@ -5,7 +5,7 @@ class TasksView: UIView {
 
     var delegate: TasksPresenterDelegateProtocol?
 
-    private var tasks: [TaskModel] = []
+    private var tasks: [TasksCollectionViewCellData] = []
     private let titleLabel = UILabel()
     private let dateLabel = UILabel()
     private let addNewTaskButton = UIButton()
@@ -19,7 +19,6 @@ class TasksView: UIView {
         return UICollectionView(frame: .zero, collectionViewLayout: layout)
     }()
 
-    
     init() {
         super.init(frame: .zero)
         setupView()
@@ -31,6 +30,7 @@ class TasksView: UIView {
     
 }
 
+//MARK: - TasksViewProtocol
 extension TasksView: TasksViewProtocol {
 
     func setTitle(_ text: String) {
@@ -45,11 +45,10 @@ extension TasksView: TasksViewProtocol {
         addNewTaskButton.setTitle(text, for: .normal)
     }
 
-    func reloadTasks(_ tasks: [TaskModel]) {
+    func reloadTasks(_ tasks: [TasksCollectionViewCellData]) {
         self.tasks = tasks
         collectionView.reloadData()
     }
-
 
     func setButtonsData(allButtonData: FilterButtonData, openButtonData: FilterButtonData, closedButtonData: FilterButtonData) {
         allFilterButton.setTitle(allButtonData.title)
@@ -67,11 +66,11 @@ extension TasksView: TasksViewProtocol {
 
 //MARK: - FilterButtonDelegate
 extension TasksView: FilterButtonDelegate {
-    
+
     func buttonTapped(_ type: TaskFilterType) {
         delegate?.sendEvent(.filter(type))
     }
-    
+
 }
 
 //MARK: - private
@@ -85,11 +84,21 @@ private extension TasksView {
                     stackView, collectionView)
         setupConstraints()
         setupCollectionView()
+        setupButton()
         
         titleLabel.textColor = .title()
         titleLabel.font = .boldSystemFont(ofSize: 25)
         dateLabel.font = .systemFont(ofSize: 18)
         dateLabel.textColor = .date()
+        separatedView.backgroundColor = .separatedViewFilterButtonsBackground()
+        separatedView.layer.cornerRadius = 5
+        separatedView.clipsToBounds = true
+        allFilterButton.actionDelegate = self
+        openFilterButton.actionDelegate = self
+        closedFilterButton.actionDelegate = self
+    }
+
+    func setupButton() {
         var configuration = UIButton.Configuration.plain()
         configuration.imagePadding = 8
         configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
@@ -105,12 +114,6 @@ private extension TasksView {
         addNewTaskButton.setImage(.init(systemName: "plus"), for: .normal)
         addNewTaskButton.titleLabel!.font = UIFont.boldSystemFont(ofSize: 20)
         addNewTaskButton.addTarget(self, action: #selector(addNewTaskButtonTapped), for: .touchUpInside)
-        separatedView.backgroundColor = .separatedViewFilterButtonsBackground()
-        separatedView.layer.cornerRadius = 5
-        separatedView.clipsToBounds = true
-        allFilterButton.actionDelegate = self
-        openFilterButton.actionDelegate = self
-        closedFilterButton.actionDelegate = self
     }
     
     func setupCollectionView() {
@@ -120,9 +123,11 @@ private extension TasksView {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(TasksCollectionViewCell.self, forCellWithReuseIdentifier: TasksCollectionViewCell.id)
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: UICollectionViewCell.id)
+    }
 
-        var listConfig = UICollectionLayoutListConfiguration(appearance: .sidebarPlain)
-        listConfig.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
+    func setCollectionViewLayout() {
+        var listConfiguration = UICollectionLayoutListConfiguration(appearance: .sidebarPlain)
+        listConfiguration.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
           let actionHandler: UIContextualAction.Handler = { action, view, completion in
               self.delegate?.sendEvent(.remove(self.tasks[indexPath.row].id))
               completion(true)
@@ -134,8 +139,8 @@ private extension TasksView {
           return UISwipeActionsConfiguration(actions: [action])
         }
 
-        listConfig.showsSeparators = false
-        let listLayout = UICollectionViewCompositionalLayout.list(using: listConfig)
+        listConfiguration.showsSeparators = false
+        let listLayout = UICollectionViewCompositionalLayout.list(using: listConfiguration)
         collectionView.setCollectionViewLayout(listLayout, animated: false)
     }
     
@@ -185,8 +190,8 @@ extension TasksView: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let defaultCell = defaultCell(collectionView, indexPath)
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TasksCollectionViewCell.id, for: indexPath) as? TasksCollectionViewCell else { return defaultCell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TasksCollectionViewCell.id, for: indexPath) as? TasksCollectionViewCell else {
+            return defaultCell(collectionView, indexPath)
         }
         cell.setData(tasks[indexPath.row], delegate)
         return cell

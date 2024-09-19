@@ -4,7 +4,6 @@ import SnapKit
 class FilterButton: UIView {
 
     weak var actionDelegate: FilterButtonDelegate?
-
     var isSelected: Bool = false {
         didSet {
             isSelected ? setToSelectedColor() : setUnselectedColor()

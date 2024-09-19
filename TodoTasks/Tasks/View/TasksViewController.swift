@@ -39,7 +39,7 @@ extension TasksViewController: TasksViewControllerProtocol {
         mainView.setAddNewTaskButton(text)
     }
 
-    func setTasks(_ tasks: [TaskModel]) {
+    func setTasks(_ tasks: [TasksCollectionViewCellData]) {
         mainView.reloadTasks(tasks)
     }
 

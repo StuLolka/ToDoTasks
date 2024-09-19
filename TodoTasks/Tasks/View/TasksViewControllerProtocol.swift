@@ -2,7 +2,7 @@ import UIKit
 
 protocol TasksViewControllerProtocol: UIViewController {
     func updateTasks()
-    func setTasks(_ tasks: [TaskModel])
+    func setTasks(_ tasks: [TasksCollectionViewCellData])
     func setTitle(_ text: String)
     func setDate(_ text: String)
     func setAddNewTaskButton(_ text: String)

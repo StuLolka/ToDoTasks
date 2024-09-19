@@ -3,7 +3,6 @@ import CoreData
 class CoreManager {
     
     static let shared = CoreManager()
-    
     private init() {}
 
     lazy var persistentContainer: NSPersistentContainer = {
@@ -46,7 +45,7 @@ class CoreManager {
         newTask.title = task.todo
         newTask.subtitle = task.todo
         newTask.isComplited = task.completed
-        newTask.date = String.currentDate
+        newTask.date = Date()
 
         try! context.save()
     }
@@ -58,10 +57,9 @@ class CoreManager {
         newTask.title = task.title
         newTask.subtitle = task.subtitle
         newTask.isComplited = false
-        newTask.date = String.currentDate
+        newTask.date = Date()
 
         try! context.save()
     }
-
 
 }

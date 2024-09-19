@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 
 class TasksPresenter {
 
@@ -6,7 +6,6 @@ class TasksPresenter {
     weak var viewController: TasksViewControllerProtocol!
 
     private let router: TasksRouterProtocol
-
     private var taskViewData: TaskViewData {
         interactor.getTaskViewData()
     }
@@ -15,7 +14,7 @@ class TasksPresenter {
         self.viewController = viewController
         self.router = router
     }
-    
+
 }
 
 //MARK: - TasksPresenterViewProtocol
@@ -40,6 +39,9 @@ extension TasksPresenter: TasksPresenterViewProtocol {
 extension TasksPresenter: TasksPresenterProtocol {
 
     func setTasks(_ tasks: [TaskModel]) {
+        let tasks = tasks.map {
+            TasksCollectionViewCellData(id: $0.id, title: $0.title!, attributeString: getLabelAttribute(titleText: $0.title!, isComplited: $0.isComplited), subtitle: $0.subtitle!, date: $0.date?.transformDate() ?? "", doneButtonImage: getButtonImage(isComplited: $0.isComplited), tintColorButton: getButtonTint(isComplited: $0.isComplited))
+        }
         viewController.setTasks(tasks)
     }
 
@@ -47,19 +49,14 @@ extension TasksPresenter: TasksPresenterProtocol {
         viewController.setButtonsData(allButtonData: all, openButtonData: open, closedButtonData: closed)
     }
 
-    func eventHandler() {
-        
-    }
-
     func presentCreateTaskView() {
         router.presentAddNewTaskViewController()
     }
-    
-    func addNewTask() {}
-    
-    func editTask() {}
-    
-    func removeTask() {}
+
+    func presentEditTaskView(id: UUID)  {
+        guard let taskModel = interactor.getTask(id: id) else { return }
+        router.presentEditTaskViewController(taskModel)
+    }
 
 }
 
@@ -69,5 +66,29 @@ extension TasksPresenter: TasksPresenterDelegateProtocol {
     func sendEvent(_ event: TasksEvent) {
         interactor.handleEvent(event)
     }
+
+}
+
+private extension TasksPresenter {
+
+    func getLabelAttribute(titleText: String, isComplited: Bool) -> NSAttributedString {
+        let attributeString =  NSMutableAttributedString(string: titleText)
+        attributeString.addAttribute(NSAttributedString.Key.strikethroughStyle, value: 1, range: NSMakeRange(0, attributeString.length))
+        
+        let removedAttributeString = NSMutableAttributedString(string: titleText)
+        removedAttributeString.removeAttribute(NSAttributedString.Key.strikethroughStyle, range: NSMakeRange(0, attributeString.length))
+
+        return isComplited ? attributeString : removedAttributeString
+    }
+
+    func getButtonImage(isComplited: Bool) -> UIImage {
+        let imageName = isComplited ? "checkmark.circle.fill" : "circle"
+        return UIImage(systemName: imageName)!
+    }
+
+    func getButtonTint(isComplited: Bool) -> UIColor {
+        return isComplited ? .doneButtonTint() : .notDoneButtonTint()
+    }
+
 
 }

@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 
 class TasksInteractor {
 
@@ -17,6 +17,10 @@ class TasksInteractor {
 
 //MARK: - TasksInteractorProtocol
 extension TasksInteractor: TasksInteractorProtocol {
+
+    func getTask(id: UUID) -> TaskModel? {
+        entity.getTask(id: id)
+    }
     
     func getTasks() {
         isLaunchedBefore ? setTasks() : getTasksFromService()
@@ -41,6 +45,8 @@ extension TasksInteractor: TasksInteractorProtocol {
             removeTask(id)
         case .newTask:
             presenter?.presentCreateTaskView()
+        case .taskSelected(let id):
+            presenter?.presentEditTaskView(id: id)
         }
     }
 
@@ -92,4 +98,16 @@ enum TasksEvent {
     case filter(TaskFilterType)
     case remove(UUID)
     case newTask
+    case taskSelected(UUID)
+}
+
+//MARK: - TasksCollectionViewCellData
+struct TasksCollectionViewCellData {
+    let id: UUID
+    let title: String
+    let attributeString: NSAttributedString
+    let subtitle: String
+    let date: String
+    let doneButtonImage: UIImage
+    let tintColorButton: UIColor
 }

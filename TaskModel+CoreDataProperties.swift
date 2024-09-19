@@ -9,9 +9,9 @@ extension TaskModel {
     }
 
     @NSManaged public var id: UUID
-    @NSManaged public var title: String?
-    @NSManaged public var subtitle: String?
-    @NSManaged public var date: String?
+    @NSManaged public var title: String!
+    @NSManaged public var subtitle: String!
+    @NSManaged public var date: Date!
     @NSManaged public var isComplited: Bool
 
 }
@@ -24,7 +24,7 @@ extension TaskModel : Identifiable {
         try! managedObjectContext?.save()
     }
 
-    func update(_ task: TaskModel) {
+    func update(_ task: EditTaskData) {
         self.title = task.title
         self.subtitle = task.subtitle
 

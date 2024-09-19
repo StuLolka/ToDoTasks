@@ -1,6 +1,7 @@
 import Foundation
 
 protocol TaskEntityProtocol {
+    func getTask(id: UUID) -> TaskModel?
     func getTaskViewData() -> TaskViewData
     func getTasks() -> [TaskModel]
     func toggleIsDone(_ id: UUID)

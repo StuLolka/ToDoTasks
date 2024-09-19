@@ -8,7 +8,7 @@ class TaskEntity {
     private var selectedFilter = TaskFilterType.all
 
     private var tasks: [TaskModel] {
-        CoreManager.shared.getTasks()
+        CoreManager.shared.getTasks().sorted { $0.date > $1.date }
     }
 
     private var openTasks: [TaskModel] {
@@ -22,6 +22,12 @@ class TaskEntity {
 
 //MARK: - TaskEntityProtocol
 extension TaskEntity: TaskEntityProtocol {
+
+    func getTask(id: UUID) -> TaskModel? {
+        guard let index = (tasks.firstIndex { $0.id == id }) else { return nil }
+        return tasks[index]
+    }
+    
 
     func getButtonsData() -> (FilterButtonData, FilterButtonData, FilterButtonData) {
         let allButton = FilterButtonData(title: "All", number: String(tasks.count), isSelected: selectedFilter == .all)
