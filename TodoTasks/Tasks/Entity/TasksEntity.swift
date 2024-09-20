@@ -1,11 +1,11 @@
 import UIKit
 import CoreData
 
-class TaskEntity {
+class TasksEntity {
 
     private let title = "Today's Task"
     private let buttonTitle = "New Task"
-    private var selectedFilter = TaskFilterType.all
+    private var selectedFilter = TasksFilterType.all
 
     private var tasks = [TaskModel]()
 
@@ -19,7 +19,7 @@ class TaskEntity {
 }
 
 //MARK: - TaskEntityProtocol
-extension TaskEntity: TaskEntityProtocol {
+extension TasksEntity: TasksEntityProtocol {
 
     func getTask(id: UUID) -> TaskModel? {
         guard let index = (tasks.firstIndex { $0.id == id }) else { return nil }
@@ -33,8 +33,8 @@ extension TaskEntity: TaskEntityProtocol {
         return (allButton, openButton, closedButton)
     }
 
-    func getTaskViewData() -> TaskViewData {
-        return TaskViewData(title: title, date: String.currentDate, buttonTitle: buttonTitle)
+    func getTaskViewData() -> TasksViewData {
+        return TasksViewData(title: title, date: String.currentDate, buttonTitle: buttonTitle)
     }
 
     func getTasks() -> [TaskModel] {
@@ -45,7 +45,7 @@ extension TaskEntity: TaskEntityProtocol {
         }
     }
 
-    func changeSelectedFilter(to filter: TaskFilterType, completion: @escaping (() -> ())) {
+    func changeSelectedFilter(to filter: TasksFilterType, completion: @escaping (() -> ())) {
         selectedFilter = filter
         completion()
     }
@@ -77,8 +77,8 @@ extension TaskEntity: TaskEntityProtocol {
 
 }
 
-//MARK: - TaskViewData
-struct TaskViewData {
+//MARK: - TasksViewData
+struct TasksViewData {
     let title: String
     let date: String
     let buttonTitle: String
@@ -91,9 +91,8 @@ struct FilterButtonData {
     let isSelected: Bool
 }
 
-
 //MARK: - FilterButtonType
-enum TaskFilterType {
+enum TasksFilterType {
     case all
     case open
     case closed

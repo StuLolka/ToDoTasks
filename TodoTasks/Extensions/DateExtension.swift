@@ -10,7 +10,7 @@ extension Date {
         return firstPart + dateFormatter.string(from: self)
     }
 
-    func getFirstPart() -> String {
+    private func getFirstPart() -> String {
         if Calendar.current.isDateInToday(self) {
             return "Today "
         }

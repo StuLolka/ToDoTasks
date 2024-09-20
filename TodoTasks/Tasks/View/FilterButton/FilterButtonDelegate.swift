@@ -1,5 +1,5 @@
 import Foundation
 
 protocol FilterButtonDelegate: AnyObject {
-    func buttonTapped(_ type: TaskFilterType)
+    func buttonTapped(_ type: TasksFilterType)
 }

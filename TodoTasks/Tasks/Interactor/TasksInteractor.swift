@@ -2,8 +2,9 @@ import UIKit
 
 class TasksInteractor {
 
-    weak var presenter: TasksPresenterProtocol?
-    private let entity: TaskEntityProtocol = TaskEntity()
+    weak var presenter: TasksPresenterInteractorProtocol?
+
+    private let entity: TasksEntityProtocol = TasksEntity()
     private let service: ServiceProtocol = Service()
 
     private var isLaunchedBefore: Bool {
@@ -56,7 +57,7 @@ extension TasksInteractor: TasksInteractorProtocol {
         }
     }
 
-    func filterTask(_ type: TaskFilterType) {
+    func filterTask(_ type: TasksFilterType) {
         DispatchQueue.global(qos: .utility).async {
             self.entity.changeSelectedFilter(to: type, completion: self.setTasks)
         }
@@ -96,7 +97,7 @@ private extension TasksInteractor {
 //MARK: - TasksEvent
 enum TasksEvent {
     case done(UUID)
-    case filter(TaskFilterType)
+    case filter(TasksFilterType)
     case remove(UUID)
     case newTask
     case taskSelected(UUID)

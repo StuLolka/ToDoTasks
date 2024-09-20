@@ -1,6 +1,7 @@
 import UIKit
 
 extension UIColor {
+
     static func create(hex: String, alpha: CGFloat) -> UIColor {
         lazy var defaultColor = UIColor.clear
         

@@ -1,6 +1,8 @@
 import UIKit
 
 protocol TasksViewControllerProtocol: UIViewController {
+    var presenter: TasksPresenterViewProtocol? { get set }
+
     func updateTasks()
     func setTasks(_ tasks: [TasksCollectionViewCellData])
     func setTitle(_ text: String)

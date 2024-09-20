@@ -1,10 +1,10 @@
 import UIKit
 
-class TasksPresenter {
+class TasksPresenter: TasksPresenterProtocol {
 
-    var interactor: TasksInteractorProtocol!
-    weak var viewController: TasksViewControllerProtocol!
+    var interactor: TasksInteractorProtocol?
 
+    private unowned let viewController: TasksViewControllerProtocol
     private let router: TasksRouterProtocol
 
     init(viewController: TasksViewControllerProtocol, router: TasksRouterProtocol) {
@@ -18,19 +18,19 @@ class TasksPresenter {
 extension TasksPresenter: TasksPresenterViewProtocol {
 
     func configureView() {
-        interactor.getTasks()
-        interactor.getTaskViewData()
+        interactor?.getTasks()
+        interactor?.getTaskViewData()
         viewController.setDelegate(self)
     }
 
     func updateTasks() {
-        interactor.getTasks()
+        interactor?.getTasks()
     }
 
 }
 
 //MARK: - TasksPresenterProtocol
-extension TasksPresenter: TasksPresenterProtocol {
+extension TasksPresenter: TasksPresenterInteractorProtocol {
 
     func setTasks(_ tasks: [TaskModel]) {
         let tasks = tasks.map {
@@ -52,7 +52,7 @@ extension TasksPresenter: TasksPresenterProtocol {
         router.presentEditTaskViewController(taskModel)
     }
 
-    func setTaskViewData(_ taskViewData: TaskViewData) {
+    func setTaskViewData(_ taskViewData: TasksViewData) {
         viewController.setTitle(taskViewData.title)
         viewController.setDate(taskViewData.date)
         viewController.setAddNewTaskButton(taskViewData.buttonTitle)
@@ -64,7 +64,7 @@ extension TasksPresenter: TasksPresenterProtocol {
 extension TasksPresenter: TasksPresenterDelegateProtocol {
     
     func sendEvent(_ event: TasksEvent) {
-        interactor.handleEvent(event)
+        interactor?.handleEvent(event)
     }
 
 }
@@ -84,7 +84,7 @@ private extension TasksPresenter {
 
     func getButtonImage(isComplited: Bool) -> UIImage {
         let imageName = isComplited ? "checkmark.circle.fill" : "circle"
-        return UIImage(systemName: imageName)!
+        return UIImage(systemName: imageName) ?? UIImage()
     }
 
     func getButtonTint(isComplited: Bool) -> UIColor {

@@ -1,5 +1,6 @@
 import Foundation
 
+//MARK: - TaskServerModel
 struct TaskServerModel: Decodable {
     let todos: [Todos]
     let total: Int
@@ -7,6 +8,7 @@ struct TaskServerModel: Decodable {
     let limit: Int
 }
 
+//MARK: - Todos
 struct Todos: Decodable {
     let id: Int
     let todo: String

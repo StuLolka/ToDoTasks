@@ -67,7 +67,7 @@ extension TasksView: TasksViewProtocol {
 //MARK: - FilterButtonDelegate
 extension TasksView: FilterButtonDelegate {
 
-    func buttonTapped(_ type: TaskFilterType) {
+    func buttonTapped(_ type: TasksFilterType) {
         delegate?.sendEvent(.filter(type))
     }
 

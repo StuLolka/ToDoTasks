@@ -10,11 +10,11 @@ class FilterButton: UIView {
         }
     }
 
-    private let type: TaskFilterType
+    private let type: TasksFilterType
     private let titleLabel = UILabel()
     private let numberLabel = UILabel()
 
-    init(type: TaskFilterType) {
+    init(type: TasksFilterType) {
         self.type = type
         super.init(frame: .zero)
         setupViews()
