@@ -2,10 +2,8 @@
 
 Simple application for keeping a list of tasks with the possibility to add, edit and delete tasks.
 
-![](https://github.com/StuLolka/ToDoTasks/blob/main/ForReadMe/App.gif)
+<img src="https://github.com/StuLolka/ToDoTasks/blob/main/ForReadMe/App.gif" width="235" height="500"/>
 
-Creatind new toDo:
-<img src="[https://github.com/StuLolka/Notes/blob/main/forReadme/screenInterface1.jpg](https://github.com/StuLolka/ToDoTasks/blob/main/ForReadMe/Screen.png)" width="235" height="400">
 
 
 # Using
@@ -13,11 +11,11 @@ The first time you launch the application, the task list is downloaded from http
 Application supports Core Data. All toDos will be saved.
 The creation, loading, editing and deletion of tasks is processed in the background stream using GCD.
 
-Remove an filter
-![](https://github.com/StuLolka/ToDoTasks/blob/main/ForReadMe/RemovingAndFilters.gif)
 
-Create new
-![](https://github.com/StuLolka/ToDoTasks/blob/main/ForReadMe/CreatingNew.gif)
+Remove and filter
 
-Application created on VIPER architecture.
-Written unit tests.
+<img src="https://github.com/StuLolka/ToDoTasks/blob/main/ForReadMe/RemovingAndFilters.gif" width="235" height="500"/>
+
+
+Application is created on VIPER architecture.
+Unit tests are written.
