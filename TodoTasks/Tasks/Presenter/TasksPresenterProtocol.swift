@@ -9,9 +9,10 @@ protocol TasksPresenterViewProtocol: AnyObject {
 //MARK: - TasksPresenterProtocol
 protocol TasksPresenterProtocol: AnyObject {
     func setTasks(_ tasks: [TaskModel])
+    func setTaskViewData(_ taskViewData: TaskViewData)
     func setFilterButtons(_ all: FilterButtonData, _ open: FilterButtonData, _ closed: FilterButtonData)
     func presentCreateTaskView()
-    func presentEditTaskView(id: UUID)
+    func presentEditTaskView(taskModel: TaskModel?)
 }
 
 //MARK: - TasksPresenterDelegateProtocol

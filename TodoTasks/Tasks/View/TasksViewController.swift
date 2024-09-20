@@ -25,7 +25,6 @@ extension TasksViewController: TasksViewControllerProtocol {
     func updateTasks() {
         presenter?.updateTasks()
     }
-    
 
     func setTitle(_ text: String) {
         mainView.setTitle(text)

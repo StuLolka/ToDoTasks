@@ -112,7 +112,7 @@ private extension TasksView {
         addNewTaskButton.backgroundColor = .addNewTaskButtonBackground()
         addNewTaskButton.setTitleColor(.addNewTaskButtonTitle(), for: .normal)
         addNewTaskButton.setImage(.init(systemName: "plus"), for: .normal)
-        addNewTaskButton.titleLabel!.font = UIFont.boldSystemFont(ofSize: 20)
+        addNewTaskButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         addNewTaskButton.addTarget(self, action: #selector(addNewTaskButtonTapped), for: .touchUpInside)
     }
     

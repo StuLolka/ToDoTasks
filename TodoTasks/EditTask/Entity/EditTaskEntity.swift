@@ -23,7 +23,7 @@ extension EditTaskEntity: EditTaskEntityProtocol {
     }
 
     func saveTask(_ task: EditTaskData) {
-        CoreManager.shared.saveTask(task)
+        CoreDataManager.shared.saveTask(task)
     }
 
 }

@@ -1,34 +1,21 @@
 import CoreData
 
-class CoreManager {
+class CoreDataManager {
     
-    static let shared = CoreManager()
+    static let shared = CoreDataManager()
     private init() {}
 
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "TaskModel")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
-                fatalError("Unresolved error \(error), \(error.userInfo)")
+                Logger.shared.printLog(.foundNil(error.localizedDescription))
             }
         })
         return container
     }()
 
     private lazy var context = persistentContainer.viewContext
-
-
-    func saveContext () {
-        let context = persistentContainer.viewContext
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-            }
-        }
-    }
 
     func getTasks() -> [TaskModel] {
         let request = TaskModel.fetchRequest()
@@ -47,7 +34,12 @@ class CoreManager {
         newTask.isComplited = task.completed
         newTask.date = Date()
 
-        try! context.save()
+        do {
+            try context.save()
+        }
+        catch(let error) {
+            Logger.shared.printLog(.contextError(error.localizedDescription))
+        }
     }
     
 
@@ -59,7 +51,12 @@ class CoreManager {
         newTask.isComplited = false
         newTask.date = Date()
 
-        try! context.save()
+        do {
+            try context.save()
+        }
+        catch(let error) {
+            Logger.shared.printLog(.contextError(error.localizedDescription))
+        }
     }
 
 }

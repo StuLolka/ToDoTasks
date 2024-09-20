@@ -18,27 +18,27 @@ class TasksInteractor {
 //MARK: - TasksInteractorProtocol
 extension TasksInteractor: TasksInteractorProtocol {
 
-    func getTask(id: UUID) -> TaskModel? {
-        entity.getTask(id: id)
-    }
-    
     func getTasks() {
-        isLaunchedBefore ? setTasks() : getTasksFromService()
-    }
-    
-    func setTasks() {
-        presenter?.setTasks(entity.getTasks())
-        presenter?.setFilterButtons(entity.getButtonsData().0, entity.getButtonsData().1, entity.getButtonsData().2)
+        isLaunchedBefore ? getTasksFromCoreData() : getTasksFromService()
     }
 
-    func getTaskViewData() -> TaskViewData {
-        entity.getTaskViewData()
+    func setTasks() {
+        DispatchQueue.main.async {
+            self.presenter?.setTasks(self.entity.getTasks())
+            self.presenter?.setFilterButtons(self.entity.getButtonsData().0, self.entity.getButtonsData().1, self.entity.getButtonsData().2)
+        }
+    }
+
+    func getTaskViewData() {
+        DispatchQueue.main.async {
+            self.presenter?.setTaskViewData(self.entity.getTaskViewData())
+        }
     }
 
     func handleEvent(_ event: TasksEvent) {
         switch event {
         case .done(let id):
-            toggleIsDone(id)
+            toggleIsComplited(id)
         case .filter(let type):
             filterTask(type)
         case .remove(let id):
@@ -46,31 +46,27 @@ extension TasksInteractor: TasksInteractorProtocol {
         case .newTask:
             presenter?.presentCreateTaskView()
         case .taskSelected(let id):
-            presenter?.presentEditTaskView(id: id)
+            presenter?.presentEditTaskView(taskModel: entity.getTask(id: id))
+        }
+    }
+
+    func toggleIsComplited(_ id: UUID) {
+        DispatchQueue.global(qos: .utility).async {
+            self.entity.toggleIsComplited(id, completion: self.setTasks)
         }
     }
 
     func filterTask(_ type: TaskFilterType) {
-        entity.changeSelectedFilter(to: type)
-        presenter?.setTasks(entity.getTasks())
-        presenter?.setFilterButtons(entity.getButtonsData().0, entity.getButtonsData().1, entity.getButtonsData().2)
-    }
-
-    func toggleIsDone(_ id: UUID) {
-        entity.toggleIsDone(id)
-        presenter?.setTasks(entity.getTasks())
-        presenter?.setFilterButtons(entity.getButtonsData().0, entity.getButtonsData().1, entity.getButtonsData().2)
+        DispatchQueue.global(qos: .utility).async {
+            self.entity.changeSelectedFilter(to: type, completion: self.setTasks)
+        }
     }
 
     func removeTask(_ id: UUID) {
-        entity.removeTask(id)
-        presenter?.setTasks(entity.getTasks())
-        presenter?.setFilterButtons(entity.getButtonsData().0, entity.getButtonsData().1, entity.getButtonsData().2)
+        DispatchQueue.global(qos: .utility).async {
+            self.entity.removeTask(id, completion: self.setTasks)
+        }
     }
-
-    func updateTask(_ id: Int) {}
-
-    func saveTasks() {}
 
 }
 
@@ -79,10 +75,15 @@ private extension TasksInteractor {
 
     func getTasksFromService() {
         service.fetchTasks { model in
-            self.entity.setTasksFromService(model)
-            DispatchQueue.main.async {
-                self.setTasks()
+            DispatchQueue.global(qos: .utility).async {
+                self.entity.setTasksFromService(model, completion: self.setTasks)
             }
+        }
+    }
+
+    func getTasksFromCoreData() {
+        DispatchQueue.global(qos: .utility).async {
+            self.entity.setTasksFromCoreDara(completion: self.setTasks)
         }
     }
 

@@ -99,11 +99,20 @@ private extension TasksCollectionViewCellView {
     }
 
     @objc func buttonTapped() {
-        delegate?.sendEvent(.done(id!))
+        guard let id = id else {
+            Logger.shared.printLog(.foundNil("id"))
+            return
+        }
+        delegate?.sendEvent(.done(id))
     }
 
     @objc func cellSeleceted() {
-        delegate?.sendEvent(.taskSelected(id!))
+        guard let id = id else {
+            Logger.shared.printLog(.foundNil("id"))
+            return
+        }
+
+        delegate?.sendEvent(.taskSelected(id))
     }
 
 }

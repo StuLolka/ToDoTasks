@@ -6,9 +6,6 @@ class TasksPresenter {
     weak var viewController: TasksViewControllerProtocol!
 
     private let router: TasksRouterProtocol
-    private var taskViewData: TaskViewData {
-        interactor.getTaskViewData()
-    }
 
     init(viewController: TasksViewControllerProtocol, router: TasksRouterProtocol) {
         self.viewController = viewController
@@ -22,10 +19,7 @@ extension TasksPresenter: TasksPresenterViewProtocol {
 
     func configureView() {
         interactor.getTasks()
-
-        viewController.setTitle(taskViewData.title)
-        viewController.setDate(taskViewData.date)
-        viewController.setAddNewTaskButton(taskViewData.buttonTitle)
+        interactor.getTaskViewData()
         viewController.setDelegate(self)
     }
 
@@ -40,7 +34,7 @@ extension TasksPresenter: TasksPresenterProtocol {
 
     func setTasks(_ tasks: [TaskModel]) {
         let tasks = tasks.map {
-            TasksCollectionViewCellData(id: $0.id, title: $0.title!, attributeString: getLabelAttribute(titleText: $0.title!, isComplited: $0.isComplited), subtitle: $0.subtitle!, date: $0.date?.transformDate() ?? "", doneButtonImage: getButtonImage(isComplited: $0.isComplited), tintColorButton: getButtonTint(isComplited: $0.isComplited))
+            TasksCollectionViewCellData(id: $0.id, title: $0.title ?? "", attributeString: getLabelAttribute(titleText: $0.title ?? "", isComplited: $0.isComplited), subtitle: $0.subtitle ?? "", date: $0.date.transformDate(), doneButtonImage: getButtonImage(isComplited: $0.isComplited), tintColorButton: getButtonTint(isComplited: $0.isComplited))
         }
         viewController.setTasks(tasks)
     }
@@ -53,9 +47,15 @@ extension TasksPresenter: TasksPresenterProtocol {
         router.presentAddNewTaskViewController()
     }
 
-    func presentEditTaskView(id: UUID)  {
-        guard let taskModel = interactor.getTask(id: id) else { return }
+    func presentEditTaskView(taskModel: TaskModel?)  {
+        guard let taskModel else { return }
         router.presentEditTaskViewController(taskModel)
+    }
+
+    func setTaskViewData(_ taskViewData: TaskViewData) {
+        viewController.setTitle(taskViewData.title)
+        viewController.setDate(taskViewData.date)
+        viewController.setAddNewTaskButton(taskViewData.buttonTitle)
     }
 
 }
@@ -69,6 +69,7 @@ extension TasksPresenter: TasksPresenterDelegateProtocol {
 
 }
 
+//MARK: - TasksPresenter
 private extension TasksPresenter {
 
     func getLabelAttribute(titleText: String, isComplited: Bool) -> NSAttributedString {
@@ -89,6 +90,5 @@ private extension TasksPresenter {
     func getButtonTint(isComplited: Bool) -> UIColor {
         return isComplited ? .doneButtonTint() : .notDoneButtonTint()
     }
-
 
 }

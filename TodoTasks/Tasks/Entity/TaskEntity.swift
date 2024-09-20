@@ -7,9 +7,7 @@ class TaskEntity {
     private let buttonTitle = "New Task"
     private var selectedFilter = TaskFilterType.all
 
-    private var tasks: [TaskModel] {
-        CoreManager.shared.getTasks().sorted { $0.date > $1.date }
-    }
+    private var tasks = [TaskModel]()
 
     private var openTasks: [TaskModel] {
         tasks.filter { !$0.isComplited }
@@ -27,7 +25,6 @@ extension TaskEntity: TaskEntityProtocol {
         guard let index = (tasks.firstIndex { $0.id == id }) else { return nil }
         return tasks[index]
     }
-    
 
     func getButtonsData() -> (FilterButtonData, FilterButtonData, FilterButtonData) {
         let allButton = FilterButtonData(title: "All", number: String(tasks.count), isSelected: selectedFilter == .all)
@@ -48,24 +45,34 @@ extension TaskEntity: TaskEntityProtocol {
         }
     }
 
-    func changeSelectedFilter(to filter: TaskFilterType) {
+    func changeSelectedFilter(to filter: TaskFilterType, completion: @escaping (() -> ())) {
         selectedFilter = filter
+        completion()
     }
 
-    func toggleIsDone(_ id: UUID) {
+    func toggleIsComplited(_ id: UUID, completion: @escaping (() -> ())) {
         guard let index = (tasks.firstIndex { $0.id == id }) else { return }
         tasks[index].updateIsComplited()
+        completion()
     }
 
-    func setTasksFromService(_ tasks: TaskServerModel) {
+    func setTasksFromService(_ tasks: TaskServerModel, completion: @escaping (() -> ())) {
         tasks.todos.forEach {
-            CoreManager.shared.saveTaskFromServer($0)
+            CoreDataManager.shared.saveTaskFromServer($0)
         }
+        setTasksFromCoreDara(completion: completion)
     }
 
-    func removeTask(_ id: UUID) {
+    func setTasksFromCoreDara(completion: @escaping (() -> ())) {
+        tasks = CoreDataManager.shared.getTasks().sorted { $0.date > $1.date }
+        completion()
+    }
+
+    func removeTask(_ id: UUID, completion: @escaping (() -> ())) {
         guard let index = (tasks.firstIndex { $0.id == id }) else { return }
         tasks[index].remove()
+        tasks.remove(at: index)
+        completion()
     }
 
 }
